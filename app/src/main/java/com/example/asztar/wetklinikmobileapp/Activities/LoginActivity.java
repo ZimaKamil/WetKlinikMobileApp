@@ -1,4 +1,4 @@
-package com.example.asztar.wetklinikmobileapp;
+package com.example.asztar.wetklinikmobileapp.Activities;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -36,8 +36,12 @@ import android.widget.Toast;
 
 import com.example.asztar.wetklinikmobileapp.ApiConn.ApiConnection;
 import com.example.asztar.wetklinikmobileapp.ApiConn.RestResponse;
+import com.example.asztar.wetklinikmobileapp.ApiConn.Controller;
 import com.example.asztar.wetklinikmobileapp.Models.ClientModel;
 import com.example.asztar.wetklinikmobileapp.Models.ClinicDb;
+import com.example.asztar.wetklinikmobileapp.R;
+import com.example.asztar.wetklinikmobileapp.ApiConn.Settings;
+import com.example.asztar.wetklinikmobileapp.Token;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.android.gms.security.ProviderInstaller;
@@ -64,6 +68,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     private Token token = Token.getInstance();
     private UserLoginTask mAuthTask = null;
     ConnectivityManager cm;
+    private ClientModel client;
 
     // UI references.
     private AutoCompleteTextView mEmailView;
@@ -319,54 +324,55 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
      * Represents an asynchronous login/registration task used to authenticate
      * the user.
      */
-    public class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
+    public class UserLoginTask extends AsyncTask<Void, Void, Integer> {
 
         private final String mEmail;
         private final String mPassword;
-        private ClientModel client;
 
         UserLoginTask(String email, String password) {
             mEmail = email;
             mPassword = password;
         }
         @Override
-        protected Boolean doInBackground(Void... params) {
+        protected Integer doInBackground(Void... params) {
             try {
                 ProviderInstaller.installIfNeeded(getApplicationContext());
                 ObjectMapper mapper = new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
                 Controller controllerToken = new Controller(new ApiConnection(Settings.BASE_URL));
                 RestResponse responseToken = controllerToken.postLogin(mEmail, mPassword);
-                if(responseToken.ResponseCode.equals(200))
-                {
+                if (responseToken.ResponseCode.equals(200)) {
                     token = mapper.readValue(responseToken.Response, Token.class);
                     Controller controllerClient = new Controller(new ApiConnection(Settings.BASE_URL));
                     RestResponse clientResponse = controllerClient.getClient();
                     client = mapper.readValue(clientResponse.Response, ClientModel.class);
-                    if (clientResponse.ResponseCode == 200)
-                        return true;
+                    return clientResponse.ResponseCode;
                 }
             }
             catch (Exception e){
             e.getMessage();
             }
-            return false;
+            return -1;
         }
 
         @Override
-        protected void onPostExecute(final Boolean success) {
+        protected void onPostExecute(final Integer success) {
             mAuthTask = null;
             showProgress(false);
 
-            if (success == true) {
-                preferences.edit().putInt("prefClinic", client.clinicId).commit();
-                preferences.edit().putString("userName", client.email).commit();
-                Toast.makeText(LoginActivity.this, "Zalogowano jako: " + client.name + " " + client.surname, Toast.LENGTH_SHORT).show();
+            if (success == 200) {
+                preferences.edit().putInt("prefClinic", client.ClinicId).apply();
+                preferences.edit().putString("userName", client.Email).apply();
+                Toast.makeText(LoginActivity.this, "Zalogowano jako: " + client.Name + " " + client.Surname, Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(LoginActivity.this, ClinicActivity.class);
                 startActivity(intent);
                 finish();
             } else {
                 mPasswordView.setError(getString(R.string.error_incorrect_password));
                 mPasswordView.requestFocus();
+                Toast.makeText(LoginActivity.this, "Nie zalogowano, test", Toast.LENGTH_SHORT).show();
+                //Intent intent = new Intent(LoginActivity.this, ClinicActivity.class);
+                //startActivity(intent);
+                //finish();
             }
         }
 

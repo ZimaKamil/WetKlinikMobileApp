@@ -8,34 +8,25 @@ import android.arch.persistence.room.PrimaryKey;
 
 public class PhoneNumberModel {
     @PrimaryKey
-    public Integer personId;
-    public String name;
-    public String surname;
+    public Integer PhoneNumberId;
+    public String Number;
 
     public PhoneNumberModel() {
     }
 
-    public Integer getPersonId() {
-        return personId;
+    public Integer getPhoneNumberId() {
+        return PhoneNumberId;
     }
 
-    public void setPersonId(Integer personId) {
-        this.personId = personId;
+    public void setPhoneNumberId(Integer phoneNumberId) {
+        PhoneNumberId = phoneNumberId;
     }
 
-    public String getName() {
-        return name;
+    public String getPhoneNumber() {
+        return Number;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getSurname() {
-        return surname;
-    }
-
-    public void setSurname(String surname) {
-        this.surname = surname;
+    public void setPhoneNumber(String phoneNumber) {
+        Number = phoneNumber;
     }
 }

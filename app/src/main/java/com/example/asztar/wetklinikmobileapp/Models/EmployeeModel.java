@@ -7,70 +7,70 @@ import android.arch.persistence.room.PrimaryKey;
 @Entity
 public class EmployeeModel {
     @PrimaryKey
-    public Integer employeeId;
-    public Integer clinicId;
-    public Boolean showInMobileApp;
-    public String name;
-    public String surname;
-    public String position;
-    public String desc;
+    public Integer EmployeeId;
+    public Integer ClinicId;
+    public Boolean ShowInMobileApp;
+    public String Name;
+    public String Surname;
+    public String Position;
+    public String Desc;
 
     public EmployeeModel() {
     }
 
     public Integer getEmployeeId() {
-        return employeeId;
+        return EmployeeId;
     }
 
     public void setEmployeeId(Integer employeeId) {
-        this.employeeId = employeeId;
+        EmployeeId = employeeId;
     }
 
     public Integer getClinicId() {
-        return clinicId;
+        return ClinicId;
     }
 
     public void setClinicId(Integer clinicId) {
-        this.clinicId = clinicId;
+        ClinicId = clinicId;
     }
 
     public Boolean getShowInMobileApp() {
-        return showInMobileApp;
+        return ShowInMobileApp;
     }
 
     public void setShowInMobileApp(Boolean showInMobileApp) {
-        this.showInMobileApp = showInMobileApp;
+        ShowInMobileApp = showInMobileApp;
     }
 
     public String getName() {
-        return name;
+        return Name;
     }
 
     public void setName(String name) {
-        this.name = name;
+        Name = name;
     }
 
     public String getSurname() {
-        return surname;
+        return Surname;
     }
 
     public void setSurname(String surname) {
-        this.surname = surname;
+        Surname = surname;
     }
 
     public String getPosition() {
-        return position;
+        return Position;
     }
 
     public void setPosition(String position) {
-        this.position = position;
+        Position = position;
     }
 
     public String getDesc() {
-        return desc;
+        return Desc;
     }
 
     public void setDesc(String desc) {
-        this.desc = desc;
+        Desc = desc;
     }
 }

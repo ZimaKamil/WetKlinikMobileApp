@@ -96,4 +96,34 @@
     <string name="action_settings">Settings</string>
     <string name="section_format">Hello World from section: %1$d</string>
     <string name="goToEmployeeText">Poznaj nasz personel</string>
+    <string name="action_sign_out">Wyloguj</string>
+    <string name="action_clinic">Klinika</string>
+    <string name="action_pets">Zwierzęta</string>
+    <string name="action_settingspl">Ustawienia</string>
+    <string name="action_calendarpl">Kalendarz</string>
+    <string name="tvPetHeight">Wysokość</string>
+    <string name="tvPetLength">Długość</string>
+    <string name="tvPetDesc">Twój Opis</string>
+    <string name="tvClinicOpen">Godziny otwarcia</string>
+    <string name="promptPassword">Hasło</string>
+    <string name="btnLogin">Zaloguj się</string>
+    <string name="btnChangePassword">Zmień hasło</string>
+    <string name="etOldPassword">Stare hasło</string>
+    <string name="etNewPassword">Nowe hasło</string>
+    <string name="etConfirmNewPassword">Powtórz hasło</string>
+    <string name="txtChange">Zmień</string>
+    <string name="txtCancel">Anuluj</string>
+    <string name="dialogChangePassword">Zmień hasło</string>
+    <string name="errorNoConnection">Brak połączenia z internetem</string>
+    <string name="errorNewPassword">Nowe hasło jest nieporawne</string>
+    <string name="errorConfirmPassword">Proszę podać to samo hasło</string>
+    <string name="toastSuccessChangePassword">Hasło zostało zmienione</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="title_employee_list">Employees</string>
+    <string name="title_employee_detail">Employee Detail</string>
+    <string name="title_pet_list">Pets</string>
+    <string name="title_pet_detail">Pet Detail</string>
+    <string name="tvBreed">Rasa</string>
 </resources>

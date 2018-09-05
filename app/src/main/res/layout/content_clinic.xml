@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context=".Clinic"
+    tools:context=".Activities.ClinicActivity"
     tools:showIn="@layout/activity_clinic">
 
 </android.support.constraint.ConstraintLayout>

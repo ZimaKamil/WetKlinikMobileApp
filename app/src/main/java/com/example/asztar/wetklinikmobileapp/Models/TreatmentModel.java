@@ -8,25 +8,25 @@ import android.arch.persistence.room.PrimaryKey;
 
 public class TreatmentModel {
     @PrimaryKey
-    public Integer treatmentId;
-    public String name;
+    public Integer TreatmentId;
+    public String Name;
 
     public TreatmentModel() {
     }
 
     public Integer getTreatmentId() {
-        return treatmentId;
+        return TreatmentId;
     }
 
     public void setTreatmentId(Integer treatmentId) {
-        this.treatmentId = treatmentId;
+        TreatmentId = treatmentId;
     }
 
     public String getName() {
-        return name;
+        return Name;
     }
 
     public void setName(String name) {
-        this.name = name;
+        Name = name;
     }
 }

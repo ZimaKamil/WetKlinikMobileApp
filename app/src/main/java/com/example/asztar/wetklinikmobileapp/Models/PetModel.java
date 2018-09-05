@@ -8,79 +8,79 @@ import android.arch.persistence.room.PrimaryKey;
 
 public class PetModel {
     @PrimaryKey
-    public Integer petId;
-    public String petSpecies;
-    public String petBreed;
-    public String name;
-    public String clientDesc;
-    public Double height;
-    public Double length;
-    public String clientUserName;
+    public Integer PetId;
+    public String PetSpecies;
+    public String PetBreed;
+    public String Name;
+    public String ClientDesc;
+    public Double Height;
+    public Double Length;
+    public String ClientUserName;
 
     public PetModel() {
     }
 
     public Integer getPetId() {
-        return petId;
+        return PetId;
     }
 
     public void setPetId(Integer petId) {
-        this.petId = petId;
+        PetId = petId;
     }
 
     public String getPetSpecies() {
-        return petSpecies;
+        return PetSpecies;
     }
 
     public void setPetSpecies(String petSpecies) {
-        this.petSpecies = petSpecies;
+        PetSpecies = petSpecies;
     }
 
     public String getPetBreed() {
-        return petBreed;
+        return PetBreed;
     }
 
     public void setPetBreed(String petBreed) {
-        this.petBreed = petBreed;
+        PetBreed = petBreed;
     }
 
     public String getName() {
-        return name;
+        return Name;
     }
 
     public void setName(String name) {
-        this.name = name;
+        Name = name;
     }
 
     public String getClientDesc() {
-        return clientDesc;
+        return ClientDesc;
     }
 
     public void setClientDesc(String clientDesc) {
-        this.clientDesc = clientDesc;
+        ClientDesc = clientDesc;
     }
 
     public Double getHeight() {
-        return height;
+        return Height;
     }
 
     public void setHeight(Double height) {
-        this.height = height;
+        Height = height;
     }
 
     public Double getLength() {
-        return length;
+        return Length;
     }
 
     public void setLength(Double length) {
-        this.length = length;
+        Length = length;
     }
 
     public String getClientUserName() {
-        return clientUserName;
+        return ClientUserName;
     }
 
     public void setClientUserName(String clientUserName) {
-        this.clientUserName = clientUserName;
+        ClientUserName = clientUserName;
     }
 }

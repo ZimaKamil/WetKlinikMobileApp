@@ -14,64 +14,64 @@ import java.util.List;
 @SuppressWarnings(RoomWarnings.PRIMARY_KEY_FROM_EMBEDDED_IS_DROPPED)
 public class PetTreatmentModel {
     @PrimaryKey
-    public Integer petTreatmentId;
-    public DateTime date;
+    public Integer PetTreatmentId;
+    public DateTime Date;
     @Embedded
-    public TreatmentModel treatment;
-    public String desc;
+    public TreatmentModel Treatment;
+    public String Desc;
     @Embedded
-    public ArrayList<EmployeeModel> employeePetTreatment;
-    public String clientUserName;
+    public ArrayList<EmployeeModel> EmployeePetTreatment;
+    public String ClientUserName;
 
     public PetTreatmentModel() {
     }
 
     public Integer getPetTreatmentId() {
-        return petTreatmentId;
+        return PetTreatmentId;
     }
 
     public void setPetTreatmentId(Integer petTreatmentId) {
-        this.petTreatmentId = petTreatmentId;
+        PetTreatmentId = petTreatmentId;
     }
 
     public DateTime getDate() {
-        return date;
+        return Date;
     }
 
     public void setDate(DateTime date) {
-        this.date = date;
+        Date = date;
     }
 
     public TreatmentModel getTreatment() {
-        return treatment;
+        return Treatment;
     }
 
     public void setTreatment(TreatmentModel treatment) {
-        this.treatment = treatment;
+        Treatment = treatment;
     }
 
     public String getDesc() {
-        return desc;
+        return Desc;
     }
 
     public void setDesc(String desc) {
-        this.desc = desc;
+        Desc = desc;
     }
 
-    public List<EmployeeModel> getEmployeePetTreatment() {
-        return employeePetTreatment;
+    public ArrayList<EmployeeModel> getEmployeePetTreatment() {
+        return EmployeePetTreatment;
     }
 
     public void setEmployeePetTreatment(ArrayList<EmployeeModel> employeePetTreatment) {
-        this.employeePetTreatment = employeePetTreatment;
+        EmployeePetTreatment = employeePetTreatment;
     }
 
     public String getClientUserName() {
-        return clientUserName;
+        return ClientUserName;
     }
 
     public void setClientUserName(String clientUserName) {
-        this.clientUserName = clientUserName;
+        ClientUserName = clientUserName;
     }
 }
 

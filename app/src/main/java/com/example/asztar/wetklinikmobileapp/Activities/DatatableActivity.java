@@ -1,4 +1,4 @@
-package com.example.asztar.wetklinikmobileapp;
+package com.example.asztar.wetklinikmobileapp.Activities;
 
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -7,7 +7,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 
-public class DatatableActivity extends AppCompatActivity {
+import com.example.asztar.wetklinikmobileapp.MenuBase;
+import com.example.asztar.wetklinikmobileapp.R;
+
+public class DatatableActivity extends MenuBase {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

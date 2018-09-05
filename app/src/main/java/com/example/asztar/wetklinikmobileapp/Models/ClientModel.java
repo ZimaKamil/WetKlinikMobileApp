@@ -8,52 +8,52 @@ import android.arch.persistence.room.PrimaryKey;
 
 public class ClientModel {
     @PrimaryKey
-    public Integer personId;
-    public Integer clinicId;
-    public String email;
-    public String name;
-    public String surname;
+    public Integer PersonId;
+    public Integer ClinicId;
+    public String Email;
+    public String Name;
+    public String Surname;
 
     public ClientModel() {
     }
 
     public Integer getPersonId() {
-        return personId;
+        return PersonId;
     }
 
     public void setPersonId(Integer personId) {
-        this.personId = personId;
+        PersonId = personId;
     }
 
     public Integer getClinicId() {
-        return clinicId;
+        return ClinicId;
     }
 
     public void setClinicId(Integer clinicId) {
-        this.clinicId = clinicId;
+        ClinicId = clinicId;
     }
 
     public String getEmail() {
-        return email;
+        return Email;
     }
 
     public void setEmail(String email) {
-        this.email = email;
+        Email = email;
     }
 
     public String getName() {
-        return name;
+        return Name;
     }
 
     public void setName(String name) {
-        this.name = name;
+        Name = name;
     }
 
     public String getSurname() {
-        return surname;
+        return Surname;
     }
 
     public void setSurname(String surname) {
-        this.surname = surname;
+        Surname = surname;
     }
 }

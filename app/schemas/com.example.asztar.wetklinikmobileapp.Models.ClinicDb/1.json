@@ -2,52 +2,52 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "4849721c2fb8a9b6d97a9ce20fca0110",
+    "identityHash": "6159575bef24f20a6fe455f281868a3f",
     "entities": [
       {
         "tableName": "AddressModel",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`addressId` INTEGER, `town` TEXT, `street` TEXT, `buildingNr` TEXT, `postalCode` TEXT, `addressType` TEXT, PRIMARY KEY(`addressId`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`AddressId` INTEGER, `Town` TEXT, `Street` TEXT, `BuildingNr` TEXT, `PostalCode` TEXT, `AddressType` TEXT, PRIMARY KEY(`AddressId`))",
         "fields": [
           {
-            "fieldPath": "addressId",
-            "columnName": "addressId",
+            "fieldPath": "AddressId",
+            "columnName": "AddressId",
             "affinity": "INTEGER",
             "notNull": false
           },
           {
-            "fieldPath": "town",
-            "columnName": "town",
+            "fieldPath": "Town",
+            "columnName": "Town",
             "affinity": "TEXT",
             "notNull": false
           },
           {
-            "fieldPath": "street",
-            "columnName": "street",
+            "fieldPath": "Street",
+            "columnName": "Street",
             "affinity": "TEXT",
             "notNull": false
           },
           {
-            "fieldPath": "buildingNr",
-            "columnName": "buildingNr",
+            "fieldPath": "BuildingNr",
+            "columnName": "BuildingNr",
             "affinity": "TEXT",
             "notNull": false
           },
           {
-            "fieldPath": "postalCode",
-            "columnName": "postalCode",
+            "fieldPath": "PostalCode",
+            "columnName": "PostalCode",
             "affinity": "TEXT",
             "notNull": false
           },
           {
-            "fieldPath": "addressType",
-            "columnName": "addressType",
+            "fieldPath": "AddressType",
+            "columnName": "AddressType",
             "affinity": "TEXT",
             "notNull": false
           }
         ],
         "primaryKey": {
           "columnNames": [
-            "addressId"
+            "AddressId"
           ],
           "autoGenerate": false
         },
@@ -56,84 +56,84 @@
       },
       {
         "tableName": "AppointmentModel",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`appointmentId` INTEGER, `date` INTEGER, `status` TEXT, `statusChangeDate` INTEGER, `clientUserName` TEXT, `employeeId` INTEGER, `clinicId` INTEGER, `showInMobileApp` INTEGER, `name` TEXT, `surname` TEXT, `position` TEXT, `desc` TEXT, PRIMARY KEY(`appointmentId`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`AppointmentId` INTEGER, `Date` INTEGER, `Status` TEXT, `StatusChangeDate` INTEGER, `ClientUserName` TEXT, `EmployeeId` INTEGER, `ClinicId` INTEGER, `ShowInMobileApp` INTEGER, `Name` TEXT, `Surname` TEXT, `Position` TEXT, `Desc` TEXT, PRIMARY KEY(`AppointmentId`))",
         "fields": [
           {
-            "fieldPath": "appointmentId",
-            "columnName": "appointmentId",
+            "fieldPath": "AppointmentId",
+            "columnName": "AppointmentId",
             "affinity": "INTEGER",
             "notNull": false
           },
           {
-            "fieldPath": "date",
-            "columnName": "date",
+            "fieldPath": "Date",
+            "columnName": "Date",
             "affinity": "INTEGER",
             "notNull": false
           },
           {
-            "fieldPath": "status",
-            "columnName": "status",
+            "fieldPath": "Status",
+            "columnName": "Status",
             "affinity": "TEXT",
             "notNull": false
           },
           {
-            "fieldPath": "statusChangeDate",
-            "columnName": "statusChangeDate",
+            "fieldPath": "StatusChangeDate",
+            "columnName": "StatusChangeDate",
             "affinity": "INTEGER",
             "notNull": false
           },
           {
-            "fieldPath": "clientUserName",
-            "columnName": "clientUserName",
+            "fieldPath": "ClientUserName",
+            "columnName": "ClientUserName",
             "affinity": "TEXT",
             "notNull": false
           },
           {
-            "fieldPath": "employee.employeeId",
-            "columnName": "employeeId",
+            "fieldPath": "Employee.EmployeeId",
+            "columnName": "EmployeeId",
             "affinity": "INTEGER",
             "notNull": false
           },
           {
-            "fieldPath": "employee.clinicId",
-            "columnName": "clinicId",
+            "fieldPath": "Employee.ClinicId",
+            "columnName": "ClinicId",
             "affinity": "INTEGER",
             "notNull": false
           },
           {
-            "fieldPath": "employee.showInMobileApp",
-            "columnName": "showInMobileApp",
+            "fieldPath": "Employee.ShowInMobileApp",
+            "columnName": "ShowInMobileApp",
             "affinity": "INTEGER",
             "notNull": false
           },
           {
-            "fieldPath": "employee.name",
-            "columnName": "name",
+            "fieldPath": "Employee.Name",
+            "columnName": "Name",
             "affinity": "TEXT",
             "notNull": false
           },
           {
-            "fieldPath": "employee.surname",
-            "columnName": "surname",
+            "fieldPath": "Employee.Surname",
+            "columnName": "Surname",
             "affinity": "TEXT",
             "notNull": false
           },
           {
-            "fieldPath": "employee.position",
-            "columnName": "position",
+            "fieldPath": "Employee.Position",
+            "columnName": "Position",
             "affinity": "TEXT",
             "notNull": false
           },
           {
-            "fieldPath": "employee.desc",
-            "columnName": "desc",
+            "fieldPath": "Employee.Desc",
+            "columnName": "Desc",
             "affinity": "TEXT",
             "notNull": false
           }
         ],
         "primaryKey": {
           "columnNames": [
-            "appointmentId"
+            "AppointmentId"
           ],
           "autoGenerate": false
         },
@@ -142,24 +142,24 @@
       },
       {
         "tableName": "AppoitmentPetModel",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`petId` INTEGER, `name` TEXT, PRIMARY KEY(`petId`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`PetId` INTEGER, `Name` TEXT, PRIMARY KEY(`PetId`))",
         "fields": [
           {
-            "fieldPath": "petId",
-            "columnName": "petId",
+            "fieldPath": "PetId",
+            "columnName": "PetId",
             "affinity": "INTEGER",
             "notNull": false
           },
           {
-            "fieldPath": "name",
-            "columnName": "name",
+            "fieldPath": "Name",
+            "columnName": "Name",
             "affinity": "TEXT",
             "notNull": false
           }
         ],
         "primaryKey": {
           "columnNames": [
-            "petId"
+            "PetId"
           ],
           "autoGenerate": false
         },
@@ -168,42 +168,42 @@
       },
       {
         "tableName": "ClientModel",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`personId` INTEGER, `clinicId` INTEGER, `email` TEXT, `name` TEXT, `surname` TEXT, PRIMARY KEY(`personId`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`PersonId` INTEGER, `ClinicId` INTEGER, `Email` TEXT, `Name` TEXT, `Surname` TEXT, PRIMARY KEY(`PersonId`))",
         "fields": [
           {
-            "fieldPath": "personId",
-            "columnName": "personId",
+            "fieldPath": "PersonId",
+            "columnName": "PersonId",
             "affinity": "INTEGER",
             "notNull": false
           },
           {
-            "fieldPath": "clinicId",
-            "columnName": "clinicId",
+            "fieldPath": "ClinicId",
+            "columnName": "ClinicId",
             "affinity": "INTEGER",
             "notNull": false
           },
           {
-            "fieldPath": "email",
-            "columnName": "email",
+            "fieldPath": "Email",
+            "columnName": "Email",
             "affinity": "TEXT",
             "notNull": false
           },
           {
-            "fieldPath": "name",
-            "columnName": "name",
+            "fieldPath": "Name",
+            "columnName": "Name",
             "affinity": "TEXT",
             "notNull": false
           },
           {
-            "fieldPath": "surname",
-            "columnName": "surname",
+            "fieldPath": "Surname",
+            "columnName": "Surname",
             "affinity": "TEXT",
             "notNull": false
           }
         ],
         "primaryKey": {
           "columnNames": [
-            "personId"
+            "PersonId"
           ],
           "autoGenerate": false
         },
@@ -212,66 +212,66 @@
       },
       {
         "tableName": "ClinicModel",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`clinicId` INTEGER, `name` TEXT, `openingHours` TEXT, `addressId` INTEGER, `town` TEXT, `street` TEXT, `buildingNr` TEXT, `postalCode` TEXT, `addressType` TEXT, PRIMARY KEY(`clinicId`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`ClinicId` INTEGER, `Name` TEXT, `OpeningHours` TEXT, `AddressId` INTEGER, `Town` TEXT, `Street` TEXT, `BuildingNr` TEXT, `PostalCode` TEXT, `AddressType` TEXT, PRIMARY KEY(`ClinicId`))",
         "fields": [
           {
-            "fieldPath": "clinicId",
-            "columnName": "clinicId",
+            "fieldPath": "ClinicId",
+            "columnName": "ClinicId",
             "affinity": "INTEGER",
             "notNull": false
           },
           {
-            "fieldPath": "name",
-            "columnName": "name",
+            "fieldPath": "Name",
+            "columnName": "Name",
             "affinity": "TEXT",
             "notNull": false
           },
           {
-            "fieldPath": "openingHours",
-            "columnName": "openingHours",
+            "fieldPath": "OpeningHours",
+            "columnName": "OpeningHours",
             "affinity": "TEXT",
             "notNull": false
           },
           {
-            "fieldPath": "address.addressId",
-            "columnName": "addressId",
+            "fieldPath": "Address.AddressId",
+            "columnName": "AddressId",
             "affinity": "INTEGER",
             "notNull": false
           },
           {
-            "fieldPath": "address.town",
-            "columnName": "town",
+            "fieldPath": "Address.Town",
+            "columnName": "Town",
             "affinity": "TEXT",
             "notNull": false
           },
           {
-            "fieldPath": "address.street",
-            "columnName": "street",
+            "fieldPath": "Address.Street",
+            "columnName": "Street",
             "affinity": "TEXT",
             "notNull": false
           },
           {
-            "fieldPath": "address.buildingNr",
-            "columnName": "buildingNr",
+            "fieldPath": "Address.BuildingNr",
+            "columnName": "BuildingNr",
             "affinity": "TEXT",
             "notNull": false
           },
           {
-            "fieldPath": "address.postalCode",
-            "columnName": "postalCode",
+            "fieldPath": "Address.PostalCode",
+            "columnName": "PostalCode",
             "affinity": "TEXT",
             "notNull": false
           },
           {
-            "fieldPath": "address.addressType",
-            "columnName": "addressType",
+            "fieldPath": "Address.AddressType",
+            "columnName": "AddressType",
             "affinity": "TEXT",
             "notNull": false
           }
         ],
         "primaryKey": {
           "columnNames": [
-            "clinicId"
+            "ClinicId"
           ],
           "autoGenerate": false
         },
@@ -280,54 +280,54 @@
       },
       {
         "tableName": "EmployeeModel",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`employeeId` INTEGER, `clinicId` INTEGER, `showInMobileApp` INTEGER, `name` TEXT, `surname` TEXT, `position` TEXT, `desc` TEXT, PRIMARY KEY(`employeeId`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`EmployeeId` INTEGER, `ClinicId` INTEGER, `ShowInMobileApp` INTEGER, `Name` TEXT, `Surname` TEXT, `Position` TEXT, `Desc` TEXT, PRIMARY KEY(`EmployeeId`))",
         "fields": [
           {
-            "fieldPath": "employeeId",
-            "columnName": "employeeId",
+            "fieldPath": "EmployeeId",
+            "columnName": "EmployeeId",
             "affinity": "INTEGER",
             "notNull": false
           },
           {
-            "fieldPath": "clinicId",
-            "columnName": "clinicId",
+            "fieldPath": "ClinicId",
+            "columnName": "ClinicId",
             "affinity": "INTEGER",
             "notNull": false
           },
           {
-            "fieldPath": "showInMobileApp",
-            "columnName": "showInMobileApp",
+            "fieldPath": "ShowInMobileApp",
+            "columnName": "ShowInMobileApp",
             "affinity": "INTEGER",
             "notNull": false
           },
           {
-            "fieldPath": "name",
-            "columnName": "name",
+            "fieldPath": "Name",
+            "columnName": "Name",
             "affinity": "TEXT",
             "notNull": false
           },
           {
-            "fieldPath": "surname",
-            "columnName": "surname",
+            "fieldPath": "Surname",
+            "columnName": "Surname",
             "affinity": "TEXT",
             "notNull": false
           },
           {
-            "fieldPath": "position",
-            "columnName": "position",
+            "fieldPath": "Position",
+            "columnName": "Position",
             "affinity": "TEXT",
             "notNull": false
           },
           {
-            "fieldPath": "desc",
-            "columnName": "desc",
+            "fieldPath": "Desc",
+            "columnName": "Desc",
             "affinity": "TEXT",
             "notNull": false
           }
         ],
         "primaryKey": {
           "columnNames": [
-            "employeeId"
+            "EmployeeId"
           ],
           "autoGenerate": false
         },
@@ -336,60 +336,60 @@
       },
       {
         "tableName": "PetModel",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`petId` INTEGER, `petSpecies` TEXT, `petBreed` TEXT, `name` TEXT, `clientDesc` TEXT, `height` REAL, `length` REAL, `clientUserName` TEXT, PRIMARY KEY(`petId`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`PetId` INTEGER, `PetSpecies` TEXT, `PetBreed` TEXT, `Name` TEXT, `ClientDesc` TEXT, `Height` REAL, `Length` REAL, `ClientUserName` TEXT, PRIMARY KEY(`PetId`))",
         "fields": [
           {
-            "fieldPath": "petId",
-            "columnName": "petId",
+            "fieldPath": "PetId",
+            "columnName": "PetId",
             "affinity": "INTEGER",
             "notNull": false
           },
           {
-            "fieldPath": "petSpecies",
-            "columnName": "petSpecies",
+            "fieldPath": "PetSpecies",
+            "columnName": "PetSpecies",
             "affinity": "TEXT",
             "notNull": false
           },
           {
-            "fieldPath": "petBreed",
-            "columnName": "petBreed",
+            "fieldPath": "PetBreed",
+            "columnName": "PetBreed",
             "affinity": "TEXT",
             "notNull": false
           },
           {
-            "fieldPath": "name",
-            "columnName": "name",
+            "fieldPath": "Name",
+            "columnName": "Name",
             "affinity": "TEXT",
             "notNull": false
           },
           {
-            "fieldPath": "clientDesc",
-            "columnName": "clientDesc",
+            "fieldPath": "ClientDesc",
+            "columnName": "ClientDesc",
             "affinity": "TEXT",
             "notNull": false
           },
           {
-            "fieldPath": "height",
-            "columnName": "height",
+            "fieldPath": "Height",
+            "columnName": "Height",
             "affinity": "REAL",
             "notNull": false
           },
           {
-            "fieldPath": "length",
-            "columnName": "length",
+            "fieldPath": "Length",
+            "columnName": "Length",
             "affinity": "REAL",
             "notNull": false
           },
           {
-            "fieldPath": "clientUserName",
-            "columnName": "clientUserName",
+            "fieldPath": "ClientUserName",
+            "columnName": "ClientUserName",
             "affinity": "TEXT",
             "notNull": false
           }
         ],
         "primaryKey": {
           "columnNames": [
-            "petId"
+            "PetId"
           ],
           "autoGenerate": false
         },
@@ -398,48 +398,48 @@
       },
       {
         "tableName": "PetTreatmentModel",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`petTreatmentId` INTEGER, `date` INTEGER, `desc` TEXT, `clientUserName` TEXT, `treatmentId` INTEGER, `name` TEXT, PRIMARY KEY(`petTreatmentId`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`PetTreatmentId` INTEGER, `Date` INTEGER, `Desc` TEXT, `ClientUserName` TEXT, `TreatmentId` INTEGER, `Name` TEXT, PRIMARY KEY(`PetTreatmentId`))",
         "fields": [
           {
-            "fieldPath": "petTreatmentId",
-            "columnName": "petTreatmentId",
+            "fieldPath": "PetTreatmentId",
+            "columnName": "PetTreatmentId",
             "affinity": "INTEGER",
             "notNull": false
           },
           {
-            "fieldPath": "date",
-            "columnName": "date",
+            "fieldPath": "Date",
+            "columnName": "Date",
             "affinity": "INTEGER",
             "notNull": false
           },
           {
-            "fieldPath": "desc",
-            "columnName": "desc",
+            "fieldPath": "Desc",
+            "columnName": "Desc",
             "affinity": "TEXT",
             "notNull": false
           },
           {
-            "fieldPath": "clientUserName",
-            "columnName": "clientUserName",
+            "fieldPath": "ClientUserName",
+            "columnName": "ClientUserName",
             "affinity": "TEXT",
             "notNull": false
           },
           {
-            "fieldPath": "treatment.treatmentId",
-            "columnName": "treatmentId",
+            "fieldPath": "Treatment.TreatmentId",
+            "columnName": "TreatmentId",
             "affinity": "INTEGER",
             "notNull": false
           },
           {
-            "fieldPath": "treatment.name",
-            "columnName": "name",
+            "fieldPath": "Treatment.Name",
+            "columnName": "Name",
             "affinity": "TEXT",
             "notNull": false
           }
         ],
         "primaryKey": {
           "columnNames": [
-            "petTreatmentId"
+            "PetTreatmentId"
           ],
           "autoGenerate": false
         },
@@ -448,30 +448,24 @@
       },
       {
         "tableName": "PhoneNumberModel",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`personId` INTEGER, `name` TEXT, `surname` TEXT, PRIMARY KEY(`personId`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`PhoneNumberId` INTEGER, `Number` TEXT, PRIMARY KEY(`PhoneNumberId`))",
         "fields": [
           {
-            "fieldPath": "personId",
-            "columnName": "personId",
+            "fieldPath": "PhoneNumberId",
+            "columnName": "PhoneNumberId",
             "affinity": "INTEGER",
             "notNull": false
           },
           {
-            "fieldPath": "name",
-            "columnName": "name",
-            "affinity": "TEXT",
-            "notNull": false
-          },
-          {
-            "fieldPath": "surname",
-            "columnName": "surname",
+            "fieldPath": "Number",
+            "columnName": "Number",
             "affinity": "TEXT",
             "notNull": false
           }
         ],
         "primaryKey": {
           "columnNames": [
-            "personId"
+            "PhoneNumberId"
           ],
           "autoGenerate": false
         },
@@ -480,24 +474,24 @@
       },
       {
         "tableName": "TreatmentModel",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`treatmentId` INTEGER, `name` TEXT, PRIMARY KEY(`treatmentId`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`TreatmentId` INTEGER, `Name` TEXT, PRIMARY KEY(`TreatmentId`))",
         "fields": [
           {
-            "fieldPath": "treatmentId",
-            "columnName": "treatmentId",
+            "fieldPath": "TreatmentId",
+            "columnName": "TreatmentId",
             "affinity": "INTEGER",
             "notNull": false
           },
           {
-            "fieldPath": "name",
-            "columnName": "name",
+            "fieldPath": "Name",
+            "columnName": "Name",
             "affinity": "TEXT",
             "notNull": false
           }
         ],
         "primaryKey": {
           "columnNames": [
-            "treatmentId"
+            "TreatmentId"
           ],
           "autoGenerate": false
         },
@@ -507,7 +501,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"4849721c2fb8a9b6d97a9ce20fca0110\")"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"6159575bef24f20a6fe455f281868a3f\")"
     ]
   }
 }

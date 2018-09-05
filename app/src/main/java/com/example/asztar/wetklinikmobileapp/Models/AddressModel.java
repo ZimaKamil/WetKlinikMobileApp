@@ -8,61 +8,62 @@ import android.arch.persistence.room.PrimaryKey;
 public class AddressModel
 {
     @PrimaryKey
-    public Integer addressId;
-    public String town;
-    public String street;
-    public String buildingNr;
-    public String postalCode;
-    public String addressType;
+    public Integer AddressId;
+    public String Town;
+    public String Street;
+    public String BuildingNr;
+    public String PostalCode;
+    public String AddressType;
 
     public AddressModel() {
     }
 
+
     public Integer getAddressId() {
-        return addressId;
+        return AddressId;
     }
 
     public void setAddressId(Integer addressId) {
-        this.addressId = addressId;
+        AddressId = addressId;
     }
 
     public String getTown() {
-        return town;
+        return Town;
     }
 
     public void setTown(String town) {
-        this.town = town;
+        Town = town;
     }
 
     public String getStreet() {
-        return street;
+        return Street;
     }
 
     public void setStreet(String street) {
-        this.street = street;
+        Street = street;
     }
 
     public String getBuildingNr() {
-        return buildingNr;
+        return BuildingNr;
     }
 
     public void setBuildingNr(String buildingNr) {
-        this.buildingNr = buildingNr;
+        BuildingNr = buildingNr;
     }
 
     public String getPostalCode() {
-        return postalCode;
+        return PostalCode;
     }
 
     public void setPostalCode(String postalCode) {
-        this.postalCode = postalCode;
+        PostalCode = postalCode;
     }
 
     public String getAddressType() {
-        return addressType;
+        return AddressType;
     }
 
     public void setAddressType(String addressType) {
-        this.addressType = addressType;
+        AddressType = addressType;
     }
 }

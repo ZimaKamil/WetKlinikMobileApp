@@ -13,54 +13,54 @@ import java.util.List;
 @SuppressWarnings(RoomWarnings.PRIMARY_KEY_FROM_EMBEDDED_IS_DROPPED)
 public class ClinicModel {
     @PrimaryKey
-    public Integer clinicId;
+    public Integer ClinicId;
     @Embedded
-    public AddressModel address;
-    public String name;
-    public String openingHours;
+    public AddressModel Address;
+    public String Name;
+    public String OpeningHours;
     @Embedded
-    public ArrayList<PhoneNumberModel> clinicPhoneNumber;
+    public ArrayList<PhoneNumberModel> ClinicPhoneNumber;
 
     public ClinicModel() {
     }
 
     public Integer getClinicId() {
-        return clinicId;
+        return ClinicId;
     }
 
     public void setClinicId(Integer clinicId) {
-        this.clinicId = clinicId;
+        ClinicId = clinicId;
     }
 
     public AddressModel getAddress() {
-        return address;
+        return Address;
     }
 
     public void setAddress(AddressModel address) {
-        this.address = address;
+        Address = address;
     }
 
     public String getName() {
-        return name;
+        return Name;
     }
 
     public void setName(String name) {
-        this.name = name;
+        Name = name;
     }
 
     public String getOpeningHours() {
-        return openingHours;
+        return OpeningHours;
     }
 
     public void setOpeningHours(String openingHours) {
-        this.openingHours = openingHours;
+        OpeningHours = openingHours;
     }
 
-    public List<PhoneNumberModel> getClinicPhoneNumber() {
-        return clinicPhoneNumber;
+    public ArrayList<PhoneNumberModel> getClinicPhoneNumber() {
+        return ClinicPhoneNumber;
     }
 
     public void setClinicPhoneNumber(ArrayList<PhoneNumberModel> clinicPhoneNumber) {
-        this.clinicPhoneNumber = clinicPhoneNumber;
+        ClinicPhoneNumber = clinicPhoneNumber;
     }
 }

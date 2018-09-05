@@ -15,63 +15,63 @@ import org.joda.time.DateTime;
 public class AppointmentModel
 {
     @PrimaryKey
-    public Integer appointmentId;
-    public DateTime date;
+    public Integer AppointmentId;
+    public DateTime Date;
     @Embedded
-    public EmployeeModel employee;
-    public String status;
-    public DateTime statusChangeDate;
-    public String clientUserName;
+    public EmployeeModel Employee;
+    public String Status;
+    public DateTime StatusChangeDate;
+    public String ClientUserName;
 
     public AppointmentModel() {
     }
 
     public Integer getAppointmentId() {
-        return appointmentId;
+        return AppointmentId;
     }
 
     public void setAppointmentId(Integer appointmentId) {
-        this.appointmentId = appointmentId;
+        AppointmentId = appointmentId;
     }
 
     public DateTime getDate() {
-        return date;
+        return Date;
     }
 
     public void setDate(DateTime date) {
-        this.date = date;
+        Date = date;
     }
 
     public EmployeeModel getEmployee() {
-        return employee;
+        return Employee;
     }
 
     public void setEmployee(EmployeeModel employee) {
-        this.employee = employee;
+        Employee = employee;
     }
 
     public String getStatus() {
-        return status;
+        return Status;
     }
 
     public void setStatus(String status) {
-        this.status = status;
+        Status = status;
     }
 
     public DateTime getStatusChangeDate() {
-        return statusChangeDate;
+        return StatusChangeDate;
     }
 
     public void setStatusChangeDate(DateTime statusChangeDate) {
-        this.statusChangeDate = statusChangeDate;
+        StatusChangeDate = statusChangeDate;
     }
 
     public String getClientUserName() {
-        return clientUserName;
+        return ClientUserName;
     }
 
     public void setClientUserName(String clientUserName) {
-        this.clientUserName = clientUserName;
+        ClientUserName = clientUserName;
     }
 }
 

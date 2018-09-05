@@ -207,7 +207,7 @@ public class ApiConnection {
             e.getMessage();
         }
         urlConnection.disconnect();
-        return new RestResponse(400, null);
+        return new RestResponse(-1, null);
     }
 
     private String getDataString(HashMap<String, String> encoded) throws UnsupportedEncodingException {
@@ -266,4 +266,6 @@ public class ApiConnection {
         return sb.toString();
     }
 }
+
+
 

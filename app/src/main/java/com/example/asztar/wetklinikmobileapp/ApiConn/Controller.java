@@ -1,7 +1,8 @@
-package com.example.asztar.wetklinikmobileapp;
+package com.example.asztar.wetklinikmobileapp.ApiConn;
 
 import com.example.asztar.wetklinikmobileapp.ApiConn.ApiConnection;
 import com.example.asztar.wetklinikmobileapp.ApiConn.RestResponse;
+import com.example.asztar.wetklinikmobileapp.Token;
 
 public class Controller {
     ApiConnection apiConnection;
@@ -142,17 +143,19 @@ public class Controller {
         }
     }
 
-    public void postChangePassword(String OldPassword, String NewPassword, String ConfirmPassword) {
+    public RestResponse postChangePassword(String OldPassword, String NewPassword, String ConfirmPassword) {
         try {
-            apiConnection.setRequest("api/Account/ChangePassword");
+            apiConnection.setRequest("/api/Account/ChangePassword");
             apiConnection.setReqMethod("POST");
             apiConnection.setAuthorize(true);
             apiConnection.addBodyParameter("OldPassword", OldPassword);
             apiConnection.addBodyParameter("NewPassword", NewPassword);
             apiConnection.addBodyParameter("ConfirmPassword", ConfirmPassword);
             RestResponse response = apiConnection.execute();
+            return response;
         } catch (Exception e) {
             e.getMessage();
         }
+        return exceptionRequestResponse;
     }
 }
