@@ -9,7 +9,7 @@ import android.arch.persistence.room.RoomWarnings;
 import java.sql.Array;
 import java.util.ArrayList;
 import java.util.List;
-@Entity
+@Entity(tableName = "clinic")
 @SuppressWarnings(RoomWarnings.PRIMARY_KEY_FROM_EMBEDDED_IS_DROPPED)
 public class ClinicModel {
     @PrimaryKey

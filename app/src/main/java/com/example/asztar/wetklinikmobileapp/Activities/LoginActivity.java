@@ -37,6 +37,7 @@ import android.widget.Toast;
 import com.example.asztar.wetklinikmobileapp.ApiConn.ApiConnection;
 import com.example.asztar.wetklinikmobileapp.ApiConn.RestResponse;
 import com.example.asztar.wetklinikmobileapp.ApiConn.Controller;
+import com.example.asztar.wetklinikmobileapp.Connectivity;
 import com.example.asztar.wetklinikmobileapp.Models.ClientModel;
 import com.example.asztar.wetklinikmobileapp.Models.ClinicDb;
 import com.example.asztar.wetklinikmobileapp.R;
@@ -67,7 +68,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     SharedPreferences preferences;
     private Token token = Token.getInstance();
     private UserLoginTask mAuthTask = null;
-    ConnectivityManager cm;
     private ClientModel client;
 
     // UI references.
@@ -83,11 +83,10 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         // Set up the login form.
-        mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
+        mEmailView = findViewById(R.id.email);
         populateAutoComplete();
-        cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        mPasswordView = (EditText) findViewById(R.id.password);
-        tvNoConnection = (TextView) findViewById(R.id.tvNoConnection);
+        mPasswordView = findViewById(R.id.password);
+        tvNoConnection = findViewById(R.id.tvNoConnection);
         ClinicDb adb = ClinicDb.getDatabase(this);
          preferences = this.getSharedPreferences("user", Context.MODE_PRIVATE);
         mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
@@ -101,7 +100,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             }
         });
 
-        Button mEmailSignInButton = (Button) findViewById(R.id.email_sign_in_button);
+        Button mEmailSignInButton = findViewById(R.id.email_sign_in_button);
         mEmailSignInButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -112,7 +111,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
 
-        if (cm.getActiveNetworkInfo() == null) {
+        if (!Connectivity.connectionIsUp(this)) {
             // There are no active networks.
             tvNoConnection.setVisibility(View.VISIBLE);
         }
@@ -183,7 +182,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         boolean cancel = false;
         View focusView = null;
         tvNoConnection.setVisibility(View.GONE);
-        if (cm.getActiveNetworkInfo() == null) {
+        if (!Connectivity.connectionIsUp(this)) {
             // There are no active networks.
             cancel = true;
             mEmailView.setError("Brak połączenia z internetem");

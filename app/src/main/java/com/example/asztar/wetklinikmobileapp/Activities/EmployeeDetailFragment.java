@@ -7,6 +7,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.example.asztar.wetklinikmobileapp.Models.ClinicDb;
+import com.example.asztar.wetklinikmobileapp.Models.EmployeeDao;
+import com.example.asztar.wetklinikmobileapp.Models.EmployeeModel;
 import com.example.asztar.wetklinikmobileapp.R;
 import com.example.asztar.wetklinikmobileapp.Activities.dummy.DummyContent;
 
@@ -26,7 +29,8 @@ public class EmployeeDetailFragment extends Fragment {
     /**
      * The dummy content this fragment is presenting.
      */
-    private DummyContent.DummyItem mItem;
+    private TextView tvEmployeePosition, tvEmployeeName, tvEmployeeSurname, tvEmployeeDesc;
+    private EmployeeModel mItem;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -40,10 +44,8 @@ public class EmployeeDetailFragment extends Fragment {
         super.onCreate(savedInstanceState);
 
         if (getArguments().containsKey(ARG_ITEM_ID)) {
-            // Load the dummy content specified by the fragment
-            // arguments. In a real-world scenario, use a Loader
-            // to load content from a content provider.
-            mItem = DummyContent.ITEM_MAP.get(getArguments().getString(ARG_ITEM_ID));
+            EmployeeDao employeeDao = ClinicDb.getDatabase(getActivity()).EmployeeDao();
+            mItem = employeeDao.findEmployeeById(Integer.valueOf(getArguments().getString(ARG_ITEM_ID)));
         }
     }
 
@@ -51,10 +53,16 @@ public class EmployeeDetailFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.employee_detail, container, false);
-
+        tvEmployeePosition = (TextView) rootView.findViewById(R.id.tvEmployeePositionDetails);
+        tvEmployeeName = (TextView) rootView.findViewById(R.id.tvEmployeeNameDetails);
+        tvEmployeeSurname = (TextView) rootView.findViewById(R.id.tvEmployeeSurnameDetails);
+        tvEmployeeDesc = (TextView) rootView.findViewById(R.id.tvEmployeeDescDetails);
         // Show the dummy content as text in a TextView.
         if (mItem != null) {
-            ((TextView) rootView.findViewById(R.id.employee_detail)).setText(mItem.details);
+            tvEmployeePosition.setText(mItem.Position);
+            tvEmployeeName.setText(mItem.Name);
+            tvEmployeeSurname.setText(mItem.Surname);
+            tvEmployeeDesc.setText(mItem.Desc);
         }
 
         return rootView;

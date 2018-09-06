@@ -27,6 +27,18 @@ public class PetDetailActivity extends AppCompatActivity {
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
+        if (savedInstanceState == null) {
+            // Create the detail fragment and add it to the activity
+            // using a fragment transaction.
+            Bundle arguments = new Bundle();
+            arguments.putString(PetDetailFragment.ARG_ITEM_ID,
+                    getIntent().getStringExtra(PetDetailFragment.ARG_ITEM_ID));
+            PetDetailFragment fragment = new PetDetailFragment();
+            fragment.setArguments(arguments);
+            getSupportFragmentManager().beginTransaction()
+                    .add(R.id.pet_detail_container, fragment)
+                    .commit();
+        }
     }
 
     @Override

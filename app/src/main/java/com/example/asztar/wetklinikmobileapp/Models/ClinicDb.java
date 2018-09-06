@@ -44,10 +44,12 @@ public abstract class ClinicDb extends RoomDatabase {
         }
     }
 
-    /*public abstract ClinicModel ClinicDao();
+    public abstract EmployeeDao EmployeeDao();
+    public abstract PetDao PetDao();
+    public abstract ClinicDao ClinicDao();
+
+    /*
     public abstract AppointmentModel AppointmentDao();
-    public abstract EmployeeModel EmployeeDao();
-    public abstract PetModel PetDao();
     public abstract PetTreatmentModel PetTreatmentDao();*/
 
     /*private static class PopulateDbAsync extends AsyncTask<Void, Void, Void> {

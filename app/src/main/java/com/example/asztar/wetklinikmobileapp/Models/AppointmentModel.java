@@ -10,7 +10,7 @@ import android.arch.persistence.room.TypeConverter;
 
 import java.time.LocalDateTime;
 import org.joda.time.DateTime;
-@Entity
+@Entity(tableName = "appointment")
 @SuppressWarnings(RoomWarnings.PRIMARY_KEY_FROM_EMBEDDED_IS_DROPPED)
 public class AppointmentModel
 {

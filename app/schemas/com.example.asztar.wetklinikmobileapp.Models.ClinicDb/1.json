@@ -2,10 +2,10 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "6159575bef24f20a6fe455f281868a3f",
+    "identityHash": "60bd440fc3a3f6a48b4223b1694f9843",
     "entities": [
       {
-        "tableName": "AddressModel",
+        "tableName": "address",
         "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`AddressId` INTEGER, `Town` TEXT, `Street` TEXT, `BuildingNr` TEXT, `PostalCode` TEXT, `AddressType` TEXT, PRIMARY KEY(`AddressId`))",
         "fields": [
           {
@@ -55,7 +55,7 @@
         "foreignKeys": []
       },
       {
-        "tableName": "AppointmentModel",
+        "tableName": "appointment",
         "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`AppointmentId` INTEGER, `Date` INTEGER, `Status` TEXT, `StatusChangeDate` INTEGER, `ClientUserName` TEXT, `EmployeeId` INTEGER, `ClinicId` INTEGER, `ShowInMobileApp` INTEGER, `Name` TEXT, `Surname` TEXT, `Position` TEXT, `Desc` TEXT, PRIMARY KEY(`AppointmentId`))",
         "fields": [
           {
@@ -211,7 +211,7 @@
         "foreignKeys": []
       },
       {
-        "tableName": "ClinicModel",
+        "tableName": "clinic",
         "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`ClinicId` INTEGER, `Name` TEXT, `OpeningHours` TEXT, `AddressId` INTEGER, `Town` TEXT, `Street` TEXT, `BuildingNr` TEXT, `PostalCode` TEXT, `AddressType` TEXT, PRIMARY KEY(`ClinicId`))",
         "fields": [
           {
@@ -279,7 +279,7 @@
         "foreignKeys": []
       },
       {
-        "tableName": "EmployeeModel",
+        "tableName": "employee",
         "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`EmployeeId` INTEGER, `ClinicId` INTEGER, `ShowInMobileApp` INTEGER, `Name` TEXT, `Surname` TEXT, `Position` TEXT, `Desc` TEXT, PRIMARY KEY(`EmployeeId`))",
         "fields": [
           {
@@ -335,7 +335,7 @@
         "foreignKeys": []
       },
       {
-        "tableName": "PetModel",
+        "tableName": "pet",
         "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`PetId` INTEGER, `PetSpecies` TEXT, `PetBreed` TEXT, `Name` TEXT, `ClientDesc` TEXT, `Height` REAL, `Length` REAL, `ClientUserName` TEXT, PRIMARY KEY(`PetId`))",
         "fields": [
           {
@@ -501,7 +501,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"6159575bef24f20a6fe455f281868a3f\")"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"60bd440fc3a3f6a48b4223b1694f9843\")"
     ]
   }
 }

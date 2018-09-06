@@ -3,10 +3,12 @@ package com.example.asztar.wetklinikmobileapp.Activities;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.app.Activity;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -19,13 +21,20 @@ import com.example.asztar.wetklinikmobileapp.ApiConn.ApiConnection;
 import com.example.asztar.wetklinikmobileapp.ApiConn.Controller;
 import com.example.asztar.wetklinikmobileapp.ApiConn.RestResponse;
 import com.example.asztar.wetklinikmobileapp.ApiConn.Settings;
+import com.example.asztar.wetklinikmobileapp.Connectivity;
 import com.example.asztar.wetklinikmobileapp.MenuBase;
+import com.example.asztar.wetklinikmobileapp.Models.ClinicDb;
+import com.example.asztar.wetklinikmobileapp.Models.Converters;
+import com.example.asztar.wetklinikmobileapp.Models.EmployeeDao;
 import com.example.asztar.wetklinikmobileapp.Models.EmployeeModel;
 import com.example.asztar.wetklinikmobileapp.R;
 
 import com.example.asztar.wetklinikmobileapp.Activities.dummy.DummyContent;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import org.joda.time.DateTime;
+import org.joda.time.Days;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -40,50 +49,64 @@ import java.util.List;
  * item details side-by-side using two vertical panes.
  */
 public class EmployeeListActivity extends MenuBase {
-
-    /**
-     * Whether or not the activity is in two-pane mode, i.e. running on a tablet
-     * device.
-     */
     private boolean mTwoPane;
     SharedPreferences preferences;
     View recyclerView;
+    DateTime upDate;
+    EmployeeTask employeeTask;
+    EmployeeDao employeeDao;
+    Integer prefClinic;
+    FloatingActionButton fab;
     ArrayList<EmployeeModel> employeeModelArrayList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_employee_list);
-
-        if (findViewById(R.id.employee_detail_container) != null) {
-            // The detail container view will be present only in the
-            // large-screen layouts (res/values-w900dp).
-            // If this view is present, then the
-            // activity should be in two-pane mode.
-            mTwoPane = true;
+        preferences = this.getSharedPreferences("user", Context.MODE_PRIVATE);
+        fab = findViewById(R.id.fabRefreshEmployeeList);
+        prefClinic = preferences.getInt("prefClinic", 0);
+        long longDate = preferences.getLong("updateEmployeeListTime", 0);
+        upDate = Converters.fromTimestamp(longDate);
+        employeeDao = ClinicDb.getDatabase(this).EmployeeDao();
+        if (Days.daysBetween(upDate, DateTime.now()).getDays()>3 && Connectivity.connectionIsUp(this)) {
+            employeeTask = new EmployeeTask();
+            employeeTask.execute();
         }
-
+        else {
+            List<EmployeeModel> employee = employeeDao.findEmployeeByClinic(prefClinic);
+            employeeModelArrayList = new ArrayList<>(employee);
+        }
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(Connectivity.connectionIsUp(EmployeeListActivity.this)) {
+                    employeeTask = new EmployeeTask();
+                    employeeTask.execute();
+                }
+                Toast.makeText(EmployeeListActivity.this, "Brak połączenia z internetem", Toast.LENGTH_SHORT).show();
+            }
+        });
         View recyclerView = findViewById(R.id.employee_list);
         assert recyclerView != null;
     }
 
     private void setupRecyclerView(@NonNull RecyclerView recyclerView) {
-        recyclerView.setAdapter(new SimpleItemRecyclerViewAdapter(this, employeeModelArrayList, mTwoPane));
+        recyclerView.setAdapter(new SimpleItemRecyclerViewAdapter(this, employeeModelArrayList));
     }
 
-    public class ClinicTask extends AsyncTask<Void, Void, Integer> {
+    public class EmployeeTask extends AsyncTask<Void, Void, Integer> {
 
-        ClinicTask() {
+        EmployeeTask() {
         }
 
         @Override
         protected Integer doInBackground(Void... params) {
             int code = -1;
-            int x = preferences.getInt("prefClinic", 1);
             ObjectMapper mapper = new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
             Controller controller = new Controller(new ApiConnection(Settings.BASE_URL));
             try {
-                RestResponse response = controller.getEmployees(String.valueOf(x));
+                RestResponse response = controller.getEmployees(prefClinic.toString());
                 EmployeeModel[] employeeModels = mapper.readValue(response.Response, EmployeeModel[].class);
                 employeeModelArrayList = new ArrayList<>(Arrays.asList(employeeModels));
                 return response.ResponseCode;
@@ -98,6 +121,8 @@ public class EmployeeListActivity extends MenuBase {
             //showProgress(false);
 
             if (success == 200) {
+                preferences.edit().putLong("updateEmployeeListTime", Converters.dateToTimestamp(DateTime.now())).apply();
+                employeeDao.insert(employeeModelArrayList.toArray(new EmployeeModel[employeeModelArrayList.size()]));
                 setupRecyclerView((RecyclerView) recyclerView);
                 Toast.makeText(EmployeeListActivity.this, success.toString(), Toast.LENGTH_SHORT).show();
             } else {
@@ -107,8 +132,7 @@ public class EmployeeListActivity extends MenuBase {
 
         @Override
         protected void onCancelled() {
-            //mAuthTask = null;
-            //showProgress(false);
+
         }
     }
 
@@ -117,33 +141,20 @@ public class EmployeeListActivity extends MenuBase {
 
         private final EmployeeListActivity mParentActivity;
         private final ArrayList<EmployeeModel> mValues;
-        private final boolean mTwoPane;
         private final View.OnClickListener mOnClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                DummyContent.DummyItem item = (DummyContent.DummyItem) view.getTag();
-                if (mTwoPane) {
-                    Bundle arguments = new Bundle();
-                    arguments.putString(EmployeeDetailFragment.ARG_ITEM_ID, item.id);
-                    EmployeeDetailFragment fragment = new EmployeeDetailFragment();
-                    fragment.setArguments(arguments);
-                    mParentActivity.getSupportFragmentManager().beginTransaction()
-                            .replace(R.id.employee_detail_container, fragment)
-                            .commit();
-                } else {
-                    Context context = view.getContext();
-                    Intent intent = new Intent(context, EmployeeDetailActivity.class);
-                    intent.putExtra(EmployeeDetailFragment.ARG_ITEM_ID, item.id);
-
-                    context.startActivity(intent);
-                }
+                EmployeeModel employeeModel = (EmployeeModel) view.getTag();
+                Context context = view.getContext();
+                Intent intent = new Intent(context, EmployeeDetailActivity.class);
+                intent.putExtra(EmployeeDetailFragment.ARG_ITEM_ID, employeeModel.EmployeeId.toString());
+                context.startActivity(intent);
             }
         };
 
-        SimpleItemRecyclerViewAdapter(EmployeeListActivity parent, ArrayList<EmployeeModel> items, boolean twoPane) {
+        SimpleItemRecyclerViewAdapter(EmployeeListActivity parent, ArrayList<EmployeeModel> items) {
             mValues = items;
             mParentActivity = parent;
-            mTwoPane = twoPane;
         }
 
         @Override
@@ -158,7 +169,6 @@ public class EmployeeListActivity extends MenuBase {
             holder.tvEmployeePosition.setText(mValues.get(position).EmployeeId);
             holder.tvEmployeeName.setText(mValues.get(position).Name);
             holder.tvEmployeeName.setText(mValues.get(position).Surname);
-
             holder.itemView.setTag(mValues.get(position));
             holder.itemView.setOnClickListener(mOnClickListener);
         }
@@ -175,9 +185,9 @@ public class EmployeeListActivity extends MenuBase {
 
             ViewHolder(View view) {
                 super(view);
-                tvEmployeePosition = (TextView) view.findViewById(R.id.tvEmployeePosition);
-                tvEmployeeName = (TextView) view.findViewById(R.id.tvEmployeeName);
-                tvEmployeeSurname = (TextView) view.findViewById(R.id.tvEmployeeSurname);
+                tvEmployeePosition = view.findViewById(R.id.tvEmployeePosition);
+                tvEmployeeName = view.findViewById(R.id.tvEmployeeName);
+                tvEmployeeSurname = view.findViewById(R.id.tvEmployeeSurname);
 
             }
         }

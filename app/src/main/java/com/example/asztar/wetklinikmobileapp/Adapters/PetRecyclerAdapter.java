@@ -28,20 +28,20 @@ public class PetRecyclerAdapter extends RecyclerView.Adapter<PetRecyclerAdapter.
             PetModel pet = (PetModel) view.getTag();
                 Context context = view.getContext();
                 Intent intent = new Intent(context, PetDetailActivity.class);
-                intent.putExtra(PetDetailFragment.ARG_ITEM_ID, pet.PetId);
+                intent.putExtra(PetDetailFragment.ARG_ITEM_ID, pet.PetId.toString());
                 context.startActivity(intent);
         }
     };
 
     public static class MyViewHolder extends RecyclerView.ViewHolder {
-        public TextView petId, petSpecies, petBreed, petName;
+        private TextView petId, petSpecies, petBreed, petName;
 
-        public MyViewHolder(View view) {
+        private MyViewHolder(View view) {
             super(view);
             //petId = (TextView) view.findViewById(R.id.tvPetId);
-            petSpecies = (TextView) view.findViewById(R.id.tvPetSpieces);
-            petBreed = (TextView) view.findViewById(R.id.tvPetBreed);
-            petName = (TextView) view.findViewById(R.id.tvPetName);
+            petSpecies = view.findViewById(R.id.tvPetSpieces);
+            petBreed = view.findViewById(R.id.tvPetBreed);
+            petName = view.findViewById(R.id.tvPetName);
         }
     }
     public PetRecyclerAdapter(ArrayList<PetModel> petModelList) {
@@ -52,8 +52,7 @@ public class PetRecyclerAdapter extends RecyclerView.Adapter<PetRecyclerAdapter.
     public PetRecyclerAdapter.MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.pet_list_content, parent, false);
-        MyViewHolder vh = new MyViewHolder(v);
-        return vh;
+        return  new MyViewHolder(v);
     }
 
     // Replace the contents of a view (invoked by the layout manager)

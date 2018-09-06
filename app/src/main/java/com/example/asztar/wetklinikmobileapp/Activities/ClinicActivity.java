@@ -25,25 +25,37 @@ import com.example.asztar.wetklinikmobileapp.Adapters.ClinicPhoneNumberRecyclerA
 import com.example.asztar.wetklinikmobileapp.ApiConn.ApiConnection;
 import com.example.asztar.wetklinikmobileapp.ApiConn.RestResponse;
 import com.example.asztar.wetklinikmobileapp.ApiConn.Controller;
+import com.example.asztar.wetklinikmobileapp.Connectivity;
 import com.example.asztar.wetklinikmobileapp.MenuBase;
+import com.example.asztar.wetklinikmobileapp.Models.ClinicDao;
+import com.example.asztar.wetklinikmobileapp.Models.ClinicDb;
 import com.example.asztar.wetklinikmobileapp.Models.ClinicModel;
+import com.example.asztar.wetklinikmobileapp.Models.Converters;
+import com.example.asztar.wetklinikmobileapp.Models.PetModel;
 import com.example.asztar.wetklinikmobileapp.R;
 import com.example.asztar.wetklinikmobileapp.ApiConn.Settings;
+import com.example.asztar.wetklinikmobileapp.Token;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import org.joda.time.DateTime;
+import org.joda.time.Days;
+
+import java.util.ArrayList;
+
 public class ClinicActivity extends MenuBase {
 ClinicTask clinicTask = new ClinicTask();
-ClinicModel clinicModel = new ClinicModel();
+ClinicModel clinicModel;
+    ClinicDao clinicDao;
     RecyclerView recyclerView;
-
-TextView tvClinicName;
+    DateTime upDate;
+    TextView tvClinicName;
     TextView tvClinicOpenHours;
     TextView tvClinicTown;
     TextView tvClinicPostCode;
     TextView tvClinicStreet;
     TextView tvClinicBuilding;
-Button btnGoToEmployeeActivity;
+    Button btnGoToEmployeeActivity;
 
 SharedPreferences preferences;
 
@@ -64,7 +76,7 @@ SharedPreferences preferences;
         recyclerView = (RecyclerView) findViewById(R.id.rvPhoneNumbers);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setItemAnimator(new DefaultItemAnimator());
-
+        clinicDao = ClinicDb.getDatabase(this).ClinicDao();
         btnGoToEmployeeActivity = (Button) findViewById(R.id.btnGoToEmployeeActivity);
         btnGoToEmployeeActivity.setOnClickListener(new View.OnClickListener(){
             @Override
@@ -74,13 +86,26 @@ SharedPreferences preferences;
             }
         });
         preferences = this.getSharedPreferences("user", Context.MODE_PRIVATE);
+        long longDate = preferences.getLong("updateClinicTime", 0);
+        upDate = Converters.fromTimestamp(longDate);
+
+        if (Days.daysBetween(upDate, DateTime.now()).getDays()>3 && Connectivity.connectionIsUp(this)) {
+            clinicTask = new ClinicTask();
+            clinicTask.execute();
+        }
+        else{
+            Token token = Token.getInstance();
+            clinicModel = clinicDao.findClinicById(preferences.getInt("prefClinic", 0));
+            setupRecyclerView(recyclerView);
+        }
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                clinicTask = new ClinicTask();
-                clinicTask.execute();
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                if(Connectivity.connectionIsUp(ClinicActivity.this)) {
+                    clinicTask = new ClinicTask();
+                    clinicTask.execute();
+                }
+                Toast.makeText(ClinicActivity.this, "Brak połączenia z internetem", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -115,7 +140,8 @@ SharedPreferences preferences;
             //showProgress(false);
 
             if (success == 200) {
-
+                clinicDao.insert(clinicModel);
+                preferences.edit().putLong("updateClinicTime", Converters.dateToTimestamp(DateTime.now())).apply();
                 tvClinicName.setText(clinicModel.Name);
                 tvClinicBuilding.setText(clinicModel.Address.BuildingNr);
                 tvClinicOpenHours.setText(clinicModel.OpeningHours);

@@ -24,9 +24,11 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import com.example.asztar.wetklinikmobileapp.ApiConn.Settings;
 import com.example.asztar.wetklinikmobileapp.ChangePassword;
+import com.example.asztar.wetklinikmobileapp.Connectivity;
 import com.example.asztar.wetklinikmobileapp.MenuBase;
 import com.example.asztar.wetklinikmobileapp.R;
 
@@ -40,12 +42,15 @@ public class SettingsActivity extends MenuBase {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
-        Button btnChangePassword = (Button) findViewById(R.id.btnChangePassword);
+        Button btnChangePassword = findViewById(R.id.btnChangePassword);
         btnChangePassword.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
-                ChangePassword password = new ChangePassword(SettingsActivity.this);
-                password.change();
+                if(Connectivity.connectionIsUp(SettingsActivity.this)) {
+                    ChangePassword password = new ChangePassword(SettingsActivity.this);
+                    password.change();
+                }
+                Toast.makeText(SettingsActivity.this, "Brak połączenia z internetem", Toast.LENGTH_SHORT).show();
             }
         });
     }
