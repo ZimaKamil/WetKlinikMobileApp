@@ -4,15 +4,22 @@ import android.arch.persistence.room.Dao;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 @Entity
 
 public class ClientModel {
     @PrimaryKey
-    public Integer PersonId;
-    public Integer ClinicId;
-    public String Email;
-    public String Name;
-    public String Surname;
+    @JsonProperty("PersonId")
+    private Integer PersonId;
+    @JsonProperty("ClinicId")
+    private Integer ClinicId;
+    @JsonProperty("Email")
+    private String Email;
+    @JsonProperty("ClientName")
+    private String ClientName;
+    @JsonProperty("ClientSurname")
+    private String ClientSurname;
 
     public ClientModel() {
     }
@@ -41,19 +48,19 @@ public class ClientModel {
         Email = email;
     }
 
-    public String getName() {
-        return Name;
+    public String getClientName() {
+        return ClientName;
     }
 
-    public void setName(String name) {
-        Name = name;
+    public void setClientName(String clientName) {
+        ClientName = clientName;
     }
 
-    public String getSurname() {
-        return Surname;
+    public String getClientSurname() {
+        return ClientSurname;
     }
 
-    public void setSurname(String surname) {
-        Surname = surname;
+    public void setClientSurname(String clientSurname) {
+        ClientSurname = clientSurname;
     }
 }

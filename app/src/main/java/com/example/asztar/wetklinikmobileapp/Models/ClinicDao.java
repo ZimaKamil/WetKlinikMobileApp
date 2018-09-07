@@ -11,13 +11,13 @@ import java.util.List;
 @Dao
 public interface ClinicDao {
     @Query("SELECT * FROM clinic WHERE ClinicId = :id LIMIT 1")
-    ClinicModel findClinicById(int id);
+    ClinicRoomModel findClinicById(int id);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    void insert(ClinicModel... clinicModels);
+    void insert(ClinicRoomModel... clinicModels);
 
     @Update(onConflict = OnConflictStrategy.REPLACE)
-    void update(ClinicModel clinicModels);
+    void update(ClinicRoomModel clinicModels);
 
     @Query("DELETE FROM clinic")
     void deleteAll();

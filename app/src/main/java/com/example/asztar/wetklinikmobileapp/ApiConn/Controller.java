@@ -21,12 +21,11 @@ public class Controller {
             apiConnection.addBodyParameter("password", mPassword);
             RestResponse response = apiConnection.execute();
             return response;
-            }
-        catch (Exception e) {
+        } catch (Exception e) {
             e.getMessage();
         }
-            return exceptionRequestResponse;
-        }
+        return exceptionRequestResponse;
+    }
 
     public RestResponse getClinic(String clinicId) {
         try {
@@ -35,8 +34,7 @@ public class Controller {
             apiConnection.addUrlSegment("{clinicId}", clinicId);
             RestResponse response = apiConnection.execute();
             return response;
-            }
-        catch (Exception e) {
+        } catch (Exception e) {
             e.getMessage();
         }
         return exceptionRequestResponse;
@@ -49,8 +47,7 @@ public class Controller {
             apiConnection.setAuthorize(true);
             RestResponse response = apiConnection.execute();
             return response;
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             e.getMessage();
         }
         return exceptionRequestResponse;
@@ -63,8 +60,7 @@ public class Controller {
             apiConnection.setAuthorize(true);
             RestResponse response = apiConnection.execute();
             return response;
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             e.getMessage();
         }
         return exceptionRequestResponse;
@@ -73,14 +69,14 @@ public class Controller {
     public boolean putPet(String PetId, String PetDesc) {
         try {
             apiConnection.setRequest("/api/Pets/{PetId}");
-            apiConnection.setReqMethod("GET");
+            apiConnection.setReqMethod("PUT");
             apiConnection.setAuthorize(true);
-            apiConnection.addHeaderParameter("{PetDesc}", PetDesc);
+            apiConnection.addUrlSegment("{PetId}", PetId);
+            apiConnection.addBodyParameter("PetDesc", PetDesc);
             RestResponse response = apiConnection.execute();
-            if(response.ResponseCode == 204)
+            if (response.getResponseCode() == 204)
                 return true;
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             e.getMessage();
         }
         return false;
@@ -94,8 +90,7 @@ public class Controller {
             apiConnection.addUrlSegment("{PetId}", PetId);
             RestResponse response = apiConnection.execute();
             return response;
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             e.getMessage();
         }
         return exceptionRequestResponse;
@@ -108,8 +103,7 @@ public class Controller {
             apiConnection.setAuthorize(true);
             RestResponse response = apiConnection.execute();
             return response;
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             e.getMessage();
         }
         return exceptionRequestResponse;
@@ -123,8 +117,7 @@ public class Controller {
             apiConnection.addUrlSegment("{ClinicId}", ClinicId);
             RestResponse response = apiConnection.execute();
             return response;
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             e.getMessage();
         }
         return exceptionRequestResponse;
@@ -137,8 +130,7 @@ public class Controller {
             apiConnection.setAuthorize(true);
             RestResponse response = apiConnection.execute();
             Token.reset();
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             e.getMessage();
         }
     }

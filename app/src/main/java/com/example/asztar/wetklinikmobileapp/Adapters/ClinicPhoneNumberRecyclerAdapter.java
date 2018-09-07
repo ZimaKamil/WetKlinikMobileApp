@@ -20,9 +20,10 @@ public class ClinicPhoneNumberRecyclerAdapter extends RecyclerView.Adapter<Clini
 
         public MyViewHolder(View view) {
             super(view);
-            phoneNumber = (TextView) view.findViewById(R.id.tvPhoneNumber);
+            phoneNumber = view.findViewById(R.id.tvPhoneNumber);
         }
     }
+
     public ClinicPhoneNumberRecyclerAdapter(ArrayList<PhoneNumberModel> phoneNumbers) {
         PhoneNumberArrayList = phoneNumbers;
     }
@@ -38,8 +39,9 @@ public class ClinicPhoneNumberRecyclerAdapter extends RecyclerView.Adapter<Clini
     // Replace the contents of a view (invoked by the layout manager)
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
-        holder.phoneNumber.setText(PhoneNumberArrayList.get(position).Number);
+        holder.phoneNumber.setText(PhoneNumberArrayList.get(position).getNumber());
     }
+
     @Override
     public int getItemCount() {
         return PhoneNumberArrayList.size();

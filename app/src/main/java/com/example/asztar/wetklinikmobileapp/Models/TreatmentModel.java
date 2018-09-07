@@ -4,12 +4,16 @@ import android.arch.persistence.room.Dao;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 @Entity
 
 public class TreatmentModel {
     @PrimaryKey
-    public Integer TreatmentId;
-    public String Name;
+    @JsonProperty("TreatmentId")
+    private Integer TreatmentId;
+    @JsonProperty("TreatmentName")
+    private String TreatmentName;
 
     public TreatmentModel() {
     }
@@ -22,11 +26,11 @@ public class TreatmentModel {
         TreatmentId = treatmentId;
     }
 
-    public String getName() {
-        return Name;
+    public String getTreatmentName() {
+        return TreatmentName;
     }
 
-    public void setName(String name) {
-        Name = name;
+    public void setTreatmentName(String treatmentName) {
+        TreatmentName = treatmentName;
     }
 }

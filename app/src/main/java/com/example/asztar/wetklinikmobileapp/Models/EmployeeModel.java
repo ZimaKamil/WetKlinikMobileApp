@@ -4,16 +4,25 @@ import android.arch.persistence.room.Dao;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 @Entity(tableName = "employee")
 public class EmployeeModel {
     @PrimaryKey
-    public Integer EmployeeId;
-    public Integer ClinicId;
-    public Boolean ShowInMobileApp;
-    public String Name;
-    public String Surname;
-    public String Position;
-    public String Desc;
+    @JsonProperty("EmployeeId")
+    private Integer EmployeeId;
+    @JsonProperty("ClinicId")
+    private Integer ClinicId;
+    @JsonProperty("ShowInMobileApp")
+    private Boolean ShowInMobileApp;
+    @JsonProperty("EmployeeName")
+    private String EmployeeName;
+    @JsonProperty("Surname")
+    private String Surname;
+    @JsonProperty("Position")
+    private String Position;
+    @JsonProperty("EmployeeDesc")
+    private String EmployeeDesc;
 
     public EmployeeModel() {
     }
@@ -42,12 +51,12 @@ public class EmployeeModel {
         ShowInMobileApp = showInMobileApp;
     }
 
-    public String getName() {
-        return Name;
+    public String getEmployeeName() {
+        return EmployeeName;
     }
 
-    public void setName(String name) {
-        Name = name;
+    public void setEmployeeName(String employeeName) {
+        EmployeeName = employeeName;
     }
 
     public String getSurname() {
@@ -66,11 +75,11 @@ public class EmployeeModel {
         Position = position;
     }
 
-    public String getDesc() {
-        return Desc;
+    public String getEmployeeDesc() {
+        return EmployeeDesc;
     }
 
-    public void setDesc(String desc) {
-        Desc = desc;
+    public void setEmployeeDesc(String employeeDesc) {
+        EmployeeDesc = employeeDesc;
     }
 }

@@ -8,20 +8,29 @@ import android.arch.persistence.room.PrimaryKey;
 import android.arch.persistence.room.RoomWarnings;
 import android.arch.persistence.room.TypeConverter;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.time.LocalDateTime;
+
 import org.joda.time.DateTime;
+
 @Entity(tableName = "appointment")
 @SuppressWarnings(RoomWarnings.PRIMARY_KEY_FROM_EMBEDDED_IS_DROPPED)
-public class AppointmentModel
-{
+public class AppointmentModel {
     @PrimaryKey
-    public Integer AppointmentId;
-    public DateTime Date;
+    @JsonProperty("AppointmentId")
+    private Integer AppointmentId;
+    @JsonProperty("Date")
+    private DateTime Date;
     @Embedded
-    public EmployeeModel Employee;
-    public String Status;
-    public DateTime StatusChangeDate;
-    public String ClientUserName;
+    @JsonProperty("Employee")
+    private EmployeeModel Employee;
+    @JsonProperty("Status")
+    private int Status;
+    @JsonProperty("StatusChangeDate")
+    private DateTime StatusChangeDate;
+    @JsonProperty("ClientUserName")
+    private String ClientUserName;
 
     public AppointmentModel() {
     }
@@ -50,11 +59,11 @@ public class AppointmentModel
         Employee = employee;
     }
 
-    public String getStatus() {
+    public Integer getStatus() {
         return Status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(Integer status) {
         Status = status;
     }
 

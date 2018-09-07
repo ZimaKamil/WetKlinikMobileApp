@@ -2,8 +2,8 @@ package com.example.asztar.wetklinikmobileapp.ApiConn;
 
 public class RestResponse {
 
-    public Integer ResponseCode;
-    public String Response;
+    private Integer ResponseCode;
+    private String Response;
 
     public RestResponse(Integer responseCode, String response) {
         this.ResponseCode = responseCode;

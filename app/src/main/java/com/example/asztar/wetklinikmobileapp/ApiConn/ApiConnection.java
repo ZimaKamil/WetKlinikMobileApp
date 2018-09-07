@@ -1,5 +1,7 @@
 package com.example.asztar.wetklinikmobileapp.ApiConn;
 
+import android.content.Context;
+
 import com.example.asztar.wetklinikmobileapp.Token;
 
 import java.io.BufferedOutputStream;
@@ -27,6 +29,7 @@ public class ApiConnection {
     private HashMap<String, String> reqBody = new HashMap<>();
     private Token token = Token.getInstance();
     private HashMap<String, String> reqHeader = new HashMap<>();
+    private String putenc = "";
 
     public HttpsURLConnection getUrlProvider() {
         return urlConnection;
@@ -56,7 +59,7 @@ public class ApiConnection {
         this.authorize = authorize;
     }
 
-    public void setReqMethod(String reqMethod) throws ProtocolException {
+    public void setReqMethod(String reqMethod) {
         this.reqMethod = reqMethod;
     }
 
@@ -64,146 +67,36 @@ public class ApiConnection {
     public ApiConnection(String baseUrl) {
         this.baseUrl = baseUrl;
     }
-/*
-    public boolean sendGetRequest(){
-        try {
-            urlConnection.setRequestMethod("GET");
-            if (apiHeaders !=null) {
-                for (Map.Entry<String, String> entry : apiHeaders.entrySet()) {
-                    urlConnection.setRequestProperty(entry.getKey(), entry.getValue());
-                }
-            }
-            urlConnection.connect();
-            respCode = urlConnection.getResponseCode();
-            modelString = GetMappedModelString(urlConnection);
-            if  (respCode == 200)
-                return true;
-            return false;
-        } catch (Exception e) {
-            System.out.print(e.getMessage());
-        }
-        return false;
-    }
 
-    public boolean sendAuthGetRequest(){
-        try {
-            urlConnection.setRequestMethod("GET");
-            urlConnection.setRequestProperty("Authorization", token.getToken_type() + " " + token.getAccess_token());
-            if (apiHeaders !=null) {
-                for (Map.Entry<String, String> entry : apiHeaders.entrySet()) {
-                    urlConnection.setRequestProperty(entry.getKey(), entry.getValue());
-                }
-            }
-            urlConnection.connect();
-            respCode = urlConnection.getResponseCode();
-            modelString = GetMappedModelString(urlConnection);
-            if  (respCode == 200)
-                return true;
-            return false;
-        } catch (Exception e) {
-            System.out.print(e.getMessage());
-        }
-        return false;
-    }
-
-    public boolean sendPostRequest(){
-        try {
-            urlConnection.setRequestMethod("POST");
-            String ecd = getDataString(apiHeaders);
-            OutEncodeUrl((ecd), urlConnection);
-            respCode = urlConnection.getResponseCode();
-            modelString = GetMappedModelString(urlConnection);
-            if  (respCode == 200)
-                return true;
-            return false;
-        } catch (Exception e) {
-        }
-        return false;
-    }
-
-    public boolean sendAuthPostRequest(){
-        try {
-            urlConnection.setRequestMethod("POST");
-            urlConnection.setRequestProperty("Authorization", token.getToken_type() + " " + token.getAccess_token());
-            String ecd = getDataString(apiHeaders);
-            OutEncodeUrl((ecd), urlConnection);
-            respCode = urlConnection.getResponseCode();
-            modelString = GetMappedModelString(urlConnection);
-            if  (respCode == 200)
-                return true;
-            return false;
-        } catch (Exception e) {
-        }
-        return false;
-    }
-
-    public boolean sendAuthPutRequest(){
-        try {
-            urlConnection.getURL().toString();
-            urlConnection.setRequestMethod("PUT");
-            urlConnection.setRequestProperty("Authorization", token.getToken_type() + " " + token.getAccess_token());
-            if (apiHeaders !=null) {
-                for (Map.Entry<String, String> entry : apiHeaders.entrySet()) {
-                    urlConnection.setRequestProperty(entry.getKey(), entry.getValue());
-                }
-            }
-            urlConnection.connect();
-            respCode = urlConnection.getResponseCode();
-            modelString = GetMappedModelString(urlConnection);
-            if  (respCode == 200)
-                return true;
-            return false;
-        } catch (Exception e) {
-            System.out.print(e.getMessage());
-        }
-        return false;
-    }
-
-    public boolean sendLogin(){
-        try {
-            urlConnection.setRequestMethod("POST");
-            String ecd = getDataString(apiHeaders);
-            OutEncodeUrl((ecd), urlConnection);
-            urlConnection.connect();
-            respCode = urlConnection.getResponseCode();
-            modelString = GetMappedModelString(urlConnection);
-            if  (respCode == 200)
-                return true;
-            return false;
-        } catch (Exception e) {
-            System.out.print(e.getMessage());
-        }
-        return false;
-    }
-
-    */
     public RestResponse execute() {
         try {
+            if (reqMethod == "PUT")
+                putenc = getPutString(reqBody);
             createUrl();
             urlConnection.setRequestMethod(reqMethod);
+            reqMethod = urlConnection.getRequestMethod();
             if (authorize) {
                 urlConnection.addRequestProperty("AUTHORIZATION", "Bearer " + token.getAccess_token());
             }
-            for(Map.Entry<String, String> entry : reqHeader.entrySet()) {
+            for (Map.Entry<String, String> entry : reqHeader.entrySet()) {
                 urlConnection.addRequestProperty(entry.getKey(), entry.getValue());
             }
+
             urlConnection.setDoOutput(false);
-            if (reqMethod == "PUT" || reqMethod == "POST" && reqBody != null) {
+            if (reqMethod == "POST" && !reqBody.isEmpty()) {
                 urlConnection.addRequestProperty("Content-Type", "application/x-www-form-urlencoded");
                 urlConnection.setDoOutput(true);
-                    String ecd = getDataString(reqBody);
-                    OutEncodeUrl((ecd), urlConnection);
-                }
-
+                String ecd = getDataString(reqBody);
+                OutEncodeUrl((ecd), urlConnection);
+            }
             urlConnection.connect();
             Integer respCode = urlConnection.getResponseCode();
             String modelString = "";
-            if(respCode == 200)
+            if (respCode == 200)
                 modelString = GetModelString(urlConnection);
             urlConnection.disconnect();
             return new RestResponse(respCode, modelString);
-        }
-        catch(Exception e){
+        } catch (Exception e) {
             e.getMessage();
         }
         urlConnection.disconnect();
@@ -213,7 +106,7 @@ public class ApiConnection {
     private String getDataString(HashMap<String, String> encoded) throws UnsupportedEncodingException {
         StringBuilder result = new StringBuilder();
         boolean first = true;
-        for(Map.Entry<String, String> entry : encoded.entrySet()){
+        for (Map.Entry<String, String> entry : encoded.entrySet()) {
             if (first)
                 first = false;
             else
@@ -225,8 +118,19 @@ public class ApiConnection {
         return result.toString();
     }
 
+    private String getPutString(HashMap<String, String> encoded) throws UnsupportedEncodingException {
+        StringBuilder result = new StringBuilder();
+        for (Map.Entry<String, String> entry : encoded.entrySet()) {
+            result.append("?");
+            result.append(URLEncoder.encode(entry.getKey(), "UTF-8"));
+            result.append("=");
+            result.append(URLEncoder.encode(entry.getValue(), "UTF-8"));
+        }
+        return result.toString();
+    }
+
     public void addUrlSegment(String parameter, String value) {
-         request = request.replace(parameter, value);
+        request = request.replace(parameter, value);
     }
 
     public void addHeaderParameter(String parameter, String value) {
@@ -239,7 +143,7 @@ public class ApiConnection {
 
     private void createUrl() {
         try {
-            URL _url = new URL(baseUrl + request);
+            URL _url = new URL(baseUrl + request + putenc);
             HttpsURLConnection urlConnection = (HttpsURLConnection) _url.openConnection();
             this.urlConnection = urlConnection;
         } catch (Exception e) {

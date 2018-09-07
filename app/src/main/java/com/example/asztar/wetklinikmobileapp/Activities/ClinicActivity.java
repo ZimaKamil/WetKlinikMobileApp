@@ -30,8 +30,11 @@ import com.example.asztar.wetklinikmobileapp.MenuBase;
 import com.example.asztar.wetklinikmobileapp.Models.ClinicDao;
 import com.example.asztar.wetklinikmobileapp.Models.ClinicDb;
 import com.example.asztar.wetklinikmobileapp.Models.ClinicModel;
+import com.example.asztar.wetklinikmobileapp.Models.ClinicRoomModel;
 import com.example.asztar.wetklinikmobileapp.Models.Converters;
 import com.example.asztar.wetklinikmobileapp.Models.PetModel;
+import com.example.asztar.wetklinikmobileapp.Models.PhoneNumberDao;
+import com.example.asztar.wetklinikmobileapp.Models.PhoneNumberModel;
 import com.example.asztar.wetklinikmobileapp.R;
 import com.example.asztar.wetklinikmobileapp.ApiConn.Settings;
 import com.example.asztar.wetklinikmobileapp.Token;
@@ -42,11 +45,13 @@ import org.joda.time.DateTime;
 import org.joda.time.Days;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class ClinicActivity extends MenuBase {
-ClinicTask clinicTask = new ClinicTask();
-ClinicModel clinicModel;
+    ClinicTask clinicTask = new ClinicTask();
+    ClinicModel clinicModel;
     ClinicDao clinicDao;
+    PhoneNumberDao numberDao;
     RecyclerView recyclerView;
     DateTime upDate;
     TextView tvClinicName;
@@ -56,62 +61,59 @@ ClinicModel clinicModel;
     TextView tvClinicStreet;
     TextView tvClinicBuilding;
     Button btnGoToEmployeeActivity;
-
-SharedPreferences preferences;
+    Boolean forceRedownload = false;
+    Token token = Token.getInstance();
+    SharedPreferences preferences;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_clinic);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        tvClinicName = (TextView) findViewById(R.id.tvClinicName);
-        tvClinicPostCode = (TextView) findViewById(R.id.tvPostCode);
-        tvClinicBuilding = (TextView) findViewById(R.id.tvBuildingNr);
-        tvClinicStreet = (TextView) findViewById(R.id.tvStreet);
-        tvClinicTown = (TextView) findViewById(R.id.tvTown);
-        tvClinicOpenHours = (TextView) findViewById(R.id.tvOpenHours);
-        recyclerView = (RecyclerView) findViewById(R.id.rvPhoneNumbers);
+        FloatingActionButton fab = findViewById(R.id.fab);
+        tvClinicName = findViewById(R.id.tvClinicName);
+        tvClinicPostCode = findViewById(R.id.tvPostCode);
+        tvClinicBuilding = findViewById(R.id.tvBuildingNr);
+        tvClinicStreet = findViewById(R.id.tvStreet);
+        tvClinicTown = findViewById(R.id.tvTown);
+        tvClinicOpenHours = findViewById(R.id.tvOpenHours);
+        recyclerView = findViewById(R.id.rvPhoneNumbers);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setItemAnimator(new DefaultItemAnimator());
-        clinicDao = ClinicDb.getDatabase(this).ClinicDao();
-        btnGoToEmployeeActivity = (Button) findViewById(R.id.btnGoToEmployeeActivity);
-        btnGoToEmployeeActivity.setOnClickListener(new View.OnClickListener(){
+        btnGoToEmployeeActivity = findViewById(R.id.btnGoToEmployeeActivity);
+        btnGoToEmployeeActivity.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(ClinicActivity.this, EmployeeListActivity.class);
                 startActivity(intent);
             }
         });
-        preferences = this.getSharedPreferences("user", Context.MODE_PRIVATE);
+        if (token.getAccess_token() == null)
+            logout();
+        preferences = this.getSharedPreferences(token.getUserName(), Context.MODE_PRIVATE);
         long longDate = preferences.getLong("updateClinicTime", 0);
         upDate = Converters.fromTimestamp(longDate);
+        clinicTask = new ClinicTask();
+        clinicTask.execute();
 
-        if (Days.daysBetween(upDate, DateTime.now()).getDays()>3 && Connectivity.connectionIsUp(this)) {
-            clinicTask = new ClinicTask();
-            clinicTask.execute();
-        }
-        else{
-            Token token = Token.getInstance();
-            clinicModel = clinicDao.findClinicById(preferences.getInt("prefClinic", 0));
-            setupRecyclerView(recyclerView);
-        }
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(Connectivity.connectionIsUp(ClinicActivity.this)) {
+                if (Connectivity.connectionIsUp(ClinicActivity.this)) {
+                    forceRedownload = true;
                     clinicTask = new ClinicTask();
                     clinicTask.execute();
+                } else {
+                    Toast.makeText(ClinicActivity.this, "Brak połączenia z internetem", Toast.LENGTH_SHORT).show();
                 }
-                Toast.makeText(ClinicActivity.this, "Brak połączenia z internetem", Toast.LENGTH_SHORT).show();
             }
         });
     }
 
     private void setupRecyclerView(@NonNull RecyclerView recyclerView) {
-        recyclerView.setAdapter(new ClinicPhoneNumberRecyclerAdapter(clinicModel.ClinicPhoneNumber));
+        recyclerView.setAdapter(new ClinicPhoneNumberRecyclerAdapter(clinicModel.getClinicPhoneNumber()));
     }
 
     public class ClinicTask extends AsyncTask<Void, Void, Integer> {
@@ -122,69 +124,53 @@ SharedPreferences preferences;
         @Override
         protected Integer doInBackground(Void... params) {
             int code = -1;
-            int x = preferences.getInt("prefClinic", 0);
-            ObjectMapper mapper = new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-            Controller controller = new Controller(new ApiConnection(Settings.BASE_URL));
-            try {
-                RestResponse response = controller.getClinic(String.valueOf(x));
-                clinicModel = mapper.readValue(response.Response, ClinicModel.class);
-                return response.ResponseCode;
-            }
-            catch (Exception e){
-                e.getMessage();
+            clinicDao = ClinicDb.getDatabase(ClinicActivity.this).ClinicDao();
+            numberDao = ClinicDb.getDatabase(ClinicActivity.this).PhoneNumberDao();
+            int clinicId = preferences.getInt("prefClinic", 0);
+            if (Days.daysBetween(upDate, DateTime.now()).getDays() > 3 && Connectivity.connectionIsUp(ClinicActivity.this) || forceRedownload && Connectivity.connectionIsUp(ClinicActivity.this)) {
+                ObjectMapper mapper = new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+                Controller controller = new Controller(new ApiConnection(Settings.BASE_URL));
+                try {
+                    RestResponse response = controller.getClinic(String.valueOf(clinicId));
+                    clinicModel = mapper.readValue(response.getResponse(), ClinicModel.class);
+                    code = response.getResponseCode();
+                    if (code == 200) {
+                        clinicDao.insert(new ClinicRoomModel(clinicModel));
+                        numberDao.insert(clinicModel.getClinicPhoneNumber().toArray(new PhoneNumberModel[clinicModel.getClinicPhoneNumber().size()]));
+                    }
+                    return code;
+                } catch (Exception e) {
+                    e.getMessage();
+                }
+            } else if (upDate != Converters.fromTimestamp(Long.valueOf(0))) {
+                clinicModel = new ClinicModel(clinicDao.findClinicById(clinicId), new ArrayList<PhoneNumberModel>(numberDao.findNumberByClinic(clinicId)));
+                forceRedownload = false;
+                code = 200;
             }
             return code;
         }
+
         @Override
         protected void onPostExecute(final Integer success) {
-            //showProgress(false);
-
             if (success == 200) {
-                clinicDao.insert(clinicModel);
-                preferences.edit().putLong("updateClinicTime", Converters.dateToTimestamp(DateTime.now())).apply();
-                tvClinicName.setText(clinicModel.Name);
-                tvClinicBuilding.setText(clinicModel.Address.BuildingNr);
-                tvClinicOpenHours.setText(clinicModel.OpeningHours);
-                tvClinicPostCode.setText(clinicModel.Address.PostalCode);
-                tvClinicStreet.setText(clinicModel.Address.Street);
-                tvClinicTown.setText(clinicModel.Address.Town);
+                tvClinicName.setText(clinicModel.getClinicName());
+                tvClinicBuilding.setText(clinicModel.getAddress().getBuildingNr());
+                tvClinicOpenHours.setText(clinicModel.getOpeningHours());
+                tvClinicPostCode.setText(clinicModel.getAddress().getPostalCode());
+                tvClinicStreet.setText(clinicModel.getAddress().getStreet());
+                tvClinicTown.setText(clinicModel.getAddress().getTown());
                 setupRecyclerView(recyclerView);
-
-                Toast.makeText(ClinicActivity.this, clinicModel.Address.getTown(), Toast.LENGTH_SHORT).show();
+                preferences.edit().putLong("updateClinicTime", Converters.dateToTimestamp(DateTime.now())).apply();
+                if (forceRedownload)
+                    Toast.makeText(ClinicActivity.this, R.string.refreshed, Toast.LENGTH_SHORT).show();
+                forceRedownload = false;
             } else {
-                Toast.makeText(ClinicActivity.this, success.toString(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(ClinicActivity.this, R.string.ToastCantConnect, Toast.LENGTH_SHORT).show();
             }
         }
 
         @Override
         protected void onCancelled() {
-            //mAuthTask = null;
-            //showProgress(false);
         }
     }
-
-    public void sendNotification(View view) {
-
-        NotificationCompat.Builder mBuilder =
-                new NotificationCompat.Builder(this);
-
-        //Create the intent that’ll fire when the user taps the notification//
-
-        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.androidauthority.com/"));
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
-
-        mBuilder.setContentIntent(pendingIntent);
-
-        mBuilder.setSmallIcon(R.drawable.ic_notifications_black_24dp);
-        mBuilder.setContentTitle("Klinika weterynaryjna");
-        mBuilder.setContentText("Umówione spotkanie o ");
-
-        NotificationManager mNotificationManager =
-
-                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-
-        mNotificationManager.notify(001, mBuilder.build());
-    }
-
-
 }

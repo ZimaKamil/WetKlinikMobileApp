@@ -84,6 +84,11 @@
         android:text="@string/noConnection"
         android:visibility="gone" />
 
+    <CheckBox
+        android:id="@+id/cbRememberPassword"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/RememberPass" />
 
 
 </LinearLayout>

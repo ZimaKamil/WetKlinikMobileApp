@@ -35,8 +35,6 @@ public class ChangePassword {
         this.context = context;
     }
 
-
-
     public void change() {
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(context);
         alertDialog.setTitle(R.string.dialogChangePassword);
@@ -67,75 +65,73 @@ public class ChangePassword {
 
         alert.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) { {
-                 postPassword();
+            public void onClick(View v) {
+                {
+                    postPassword();
                 }
             }
         });
         button = alert.getButton(AlertDialog.BUTTON_POSITIVE);
     }
 
-            private void postPassword() {
-                // Reset errors.
-                oldPass.setError(null);
-                newPass.setError(null);
-                confirmPass.setError(null);
+    private void postPassword() {
+        // Reset errors.
+        oldPass.setError(null);
+        newPass.setError(null);
+        confirmPass.setError(null);
 
-                // Store values at the time of the login attempt.
-                String oldPassword = oldPass.getText().toString();
-                String newPassword = newPass.getText().toString();
-                String confirmNewPassword = confirmPass.getText().toString();
-
-
-                boolean cancel = false;
-                View focusView = null;
-                cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-                if (cm.getActiveNetworkInfo() == null) {
-                    // There are no active networks.
-                    cancel = true;
-                    oldPass.setError(context.getString(R.string.errorNoConnection));
-                }
-
-                if (TextUtils.isEmpty(newPassword) || !isPasswordValid(newPassword)) {
-                    newPass.setError(context.getString(R.string.errorNewPassword));
-                    focusView = newPass;
-                    cancel = true;
-                } else if (TextUtils.isEmpty(confirmNewPassword) || !confirmNewPassword.equals(newPassword)) {
-                    confirmPass.setError(context.getString(R.string.errorConfirmPassword));
-                    focusView = confirmPass;
-                    cancel = true;
-                }
+        // Store values at the time of the login attempt.
+        String oldPassword = oldPass.getText().toString();
+        String newPassword = newPass.getText().toString();
+        String confirmNewPassword = confirmPass.getText().toString();
 
 
-                if (TextUtils.isEmpty(oldPassword)) {
-                    oldPass.setError("Brak hasła");
-                    focusView = oldPass;
-                    cancel = true;
-                }
+        boolean cancel = false;
+        View focusView = null;
+        cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        if (cm.getActiveNetworkInfo() == null) {
+            // There are no active networks.
+            cancel = true;
+            oldPass.setError(context.getString(R.string.errorNoConnection));
+        }
 
-                if (cancel) {
-                    focusView.requestFocus();
-                } else {
-                        button.setEnabled(false);
-                        button.setText("Wysyłanie...");
-                    try {
-                        changePassTask = new PasswordTask(oldPassword, newPassword, confirmNewPassword);
-                        changePassTask.execute();
-                    }
-                     catch (Exception e) {
-                        e.getMessage();
-                         button.setEnabled(true);
-                         button.setText("Zmień");
-                     }
-                }
-                return;
+        if (TextUtils.isEmpty(newPassword) || !isPasswordValid(newPassword)) {
+            newPass.setError(context.getString(R.string.errorNewPassword));
+            focusView = newPass;
+            cancel = true;
+        } else if (TextUtils.isEmpty(confirmNewPassword) || !confirmNewPassword.equals(newPassword)) {
+            confirmPass.setError(context.getString(R.string.errorConfirmPassword));
+            focusView = confirmPass;
+            cancel = true;
+        }
+
+
+        if (TextUtils.isEmpty(oldPassword)) {
+            oldPass.setError("Brak hasła");
+            focusView = oldPass;
+            cancel = true;
+        }
+
+        if (cancel) {
+            focusView.requestFocus();
+        } else {
+            button.setEnabled(false);
+            button.setText("Wysyłanie...");
+            try {
+                changePassTask = new PasswordTask(oldPassword, newPassword, confirmNewPassword);
+                changePassTask.execute();
+            } catch (Exception e) {
+                e.getMessage();
+                button.setEnabled(true);
+                button.setText("Zmień");
             }
+        }
+        return;
+    }
 
 
-        private boolean isPasswordValid(String pass){
-        if(pass.length()>6)
-            return true;
-        return false;
+    private boolean isPasswordValid(String pass) {
+        return pass.length() > 6;
     }
 
 
@@ -158,7 +154,7 @@ public class ChangePassword {
             Controller controller = new Controller(new ApiConnection(Settings.BASE_URL));
             try {
                 RestResponse response = controller.postChangePassword(oldPassword, newPassword, confirmNewPassword);
-                return response.ResponseCode;
+                return response.getResponseCode();
             } catch (Exception e) {
                 e.getMessage();
                 button.setEnabled(true);

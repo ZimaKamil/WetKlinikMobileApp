@@ -1,9 +1,9 @@
 package com.example.asztar.wetklinikmobileapp.Models;
 
 public class PasswordChangeModel {
-    public String OldPassword;
-    public String NewPassword;
-    public String ConfirmNewPassword;
+    private String OldPassword;
+    private String NewPassword;
+    private String ConfirmNewPassword;
 
     public String getOldPassword() {
         return OldPassword;

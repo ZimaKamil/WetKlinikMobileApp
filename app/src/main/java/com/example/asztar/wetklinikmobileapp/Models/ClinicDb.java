@@ -9,25 +9,25 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
-@Database(entities = {AddressModel.class, AppointmentModel.class, AppoitmentPetModel.class, ClientModel.class, ClinicModel.class, EmployeeModel.class, PetModel.class, PetTreatmentModel.class, PhoneNumberModel.class, TreatmentModel.class}, version = 1)
+@Database(entities = {AppointmentModel.class, ClinicRoomModel.class, EmployeeModel.class, PetModel.class, PetTreatmentModel.class, PhoneNumberModel.class}, version = 7)
 @TypeConverters({Converters.class})
 public abstract class ClinicDb extends RoomDatabase {
     private static ClinicDb INSTANCE;
     private static final String DB_NAME = "Clinic.db";
-    //public ClinicDb(){}
+
+    public ClinicDb(){}
     public static ClinicDb getDatabase(final Context context) {
         if (INSTANCE == null) {
             synchronized (ClinicDb.class) {
                 if (INSTANCE == null) {
                     INSTANCE = Room.databaseBuilder(context.getApplicationContext(),
                             ClinicDb.class, DB_NAME)
-                            .allowMainThreadQueries() // SHOULD NOT BE USED IN PRODUCTION !!!
+                            .allowMainThreadQueries()
+                            .fallbackToDestructiveMigration()
                             .addCallback(new RoomDatabase.Callback() {
                                 @Override
                                 public void onCreate(@NonNull SupportSQLiteDatabase db) {
                                     super.onCreate(db);
-                                    Log.d("ClinicDb", "populating with data...");
-                                    //new PopulateDbAsync(INSTANCE).execute();
                                 }
                             })
                             .build();
@@ -38,46 +38,15 @@ public abstract class ClinicDb extends RoomDatabase {
         return INSTANCE;
     }
 
-    public void clearDb() {
-        if (INSTANCE != null) {
-            //new PopulateDbAsync(INSTANCE).execute();
-        }
-    }
-
     public abstract EmployeeDao EmployeeDao();
+
     public abstract PetDao PetDao();
+
     public abstract ClinicDao ClinicDao();
 
-    /*
-    public abstract AppointmentModel AppointmentDao();
-    public abstract PetTreatmentModel PetTreatmentDao();*/
+    public abstract PhoneNumberDao PhoneNumberDao();
 
-    /*private static class PopulateDbAsync extends AsyncTask<Void, Void, Void> {
-        private final MovieDao movieDao;
-        private final DirectorDao directorDao;
+    public abstract AppointmentDao AppointmentDao();
 
-        public PopulateDbAsync(ClinicDb instance) {
-            movieDao = instance.movieDao();
-            directorDao = instance.directorDao();
-        }
-
-        @Override
-        protected Void doInBackground(Void... voids) {
-            movieDao.deleteAll();
-            directorDao.deleteAll();
-
-            Director directorOne = new Director("Adam McKay");
-            Director directorTwo = new Director("Denis Villeneuve");
-            Director directorThree = new Director("Morten Tyldum");
-
-            Movie movieOne = new Movie("The Big Short", (int) directorDao.insert(directorOne));
-            final int dIdTwo = (int) directorDao.insert(directorTwo);
-            Movie movieTwo = new Movie("Arrival", dIdTwo);
-            Movie movieThree = new Movie("Blade Runner 2049", dIdTwo);
-            Movie movieFour = new Movie("Passengers", (int) directorDao.insert(directorThree));
-
-            movieDao.insert(movieOne, movieTwo, movieThree, movieFour);
-
-            return null;
-        }*/
+    public abstract PetTreatmentDao PetTreatmentDao();
 }

@@ -1,5 +1,7 @@
 package com.example.asztar.wetklinikmobileapp.Activities;
 
+import android.accounts.Account;
+import android.accounts.AccountManager;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
@@ -30,6 +32,7 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -55,7 +58,7 @@ import static android.Manifest.permission.READ_CONTACTS;
 /**
  * A login screen that offers login via email/password.
  */
-public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<Cursor> {
+public class LoginActivity extends AppCompatActivity {
 
     /**
      * Id to identity READ_CONTACTS permission request.
@@ -76,6 +79,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     private View mProgressView;
     private View mLoginFormView;
     private View tvNoConnection;
+    private CheckBox cbRemember;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,12 +87,23 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         // Set up the login form.
+
         mEmailView = findViewById(R.id.email);
-        populateAutoComplete();
         mPasswordView = findViewById(R.id.password);
         tvNoConnection = findViewById(R.id.tvNoConnection);
+        mLoginFormView = findViewById(R.id.login_form);
+        mProgressView = findViewById(R.id.login_progress);
+        cbRemember = findViewById(R.id.cbRememberPassword);
+
         ClinicDb adb = ClinicDb.getDatabase(this);
-         preferences = this.getSharedPreferences("user", Context.MODE_PRIVATE);
+        //getSharedPreferences("user", 0).edit().clear().commit();
+        preferences = this.getSharedPreferences("user", Context.MODE_PRIVATE);
+        cbRemember.setChecked(preferences.getBoolean("RememberMe", false));
+        if (getUserAccount(this) != null & cbRemember.isChecked()) {
+            mEmailView.setText(getUserAccount(this).name);
+            mPasswordView.setText(getUserPassword(this, getUserAccount(this)));
+        }
+
         mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
@@ -108,64 +123,48 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             }
         });
 
-        mLoginFormView = findViewById(R.id.login_form);
-        mProgressView = findViewById(R.id.login_progress);
-
         if (!Connectivity.connectionIsUp(this)) {
             // There are no active networks.
             tvNoConnection.setVisibility(View.VISIBLE);
         }
     }
 
-    private void populateAutoComplete() {
-        if (!mayRequestContacts()) {
-            return;
-        }
+    private static final String TYPE_ACCOUNT = "klinik.wet";
 
-        getLoaderManager().initLoader(0, null, this);
+    public static void addAccount(Context context, String username, String password, String token) {
+        AccountManager accountManager = AccountManager.get(context);
+        Account account = new Account(username, TYPE_ACCOUNT);
+        accountManager.addAccountExplicitly(account, password, null);
+        accountManager.setAuthToken(account, TYPE_ACCOUNT, token);
     }
 
-    private boolean mayRequestContacts() {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-            return true;
+    public static Account getUserAccount(Context context) {
+        AccountManager accountManager = AccountManager.get(context);
+        Account account = null;
+
+        try {
+            account = accountManager.getAccountsByType(TYPE_ACCOUNT)[0];
+        } catch (Exception ignored) {
+
         }
-        if (checkSelfPermission(READ_CONTACTS) == PackageManager.PERMISSION_GRANTED) {
-            return true;
-        }
-        if (shouldShowRequestPermissionRationale(READ_CONTACTS)) {
-            Snackbar.make(mEmailView, R.string.permission_rationale, Snackbar.LENGTH_INDEFINITE)
-                    .setAction(android.R.string.ok, new View.OnClickListener() {
-                        @Override
-                        @TargetApi(Build.VERSION_CODES.M)
-                        public void onClick(View v) {
-                            requestPermissions(new String[]{READ_CONTACTS}, REQUEST_READ_CONTACTS);
-                        }
-                    });
-        } else {
-            requestPermissions(new String[]{READ_CONTACTS}, REQUEST_READ_CONTACTS);
-        }
-        return false;
+        return account;
     }
 
-    /**
-     * Callback received when a permissions request has been completed.
-     */
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
-                                           @NonNull int[] grantResults) {
-        if (requestCode == REQUEST_READ_CONTACTS) {
-            if (grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                populateAutoComplete();
-            }
+    public static String getUserPassword(Context context, Account account) {
+        AccountManager accountManager = AccountManager.get(context);
+        String pass = null;
+        try {
+            pass = accountManager.getPassword(account);
+        } catch (Exception ignored) {
         }
+        return pass;
     }
 
+    public void deleteUser(Context context) {
+        AccountManager accountManager = AccountManager.get(LoginActivity.this);
+        accountManager.removeAccount(accountManager.getAccountsByType("klinik.wet")[0], null, null);
+    }
 
-    /**
-     * Attempts to sign in or register the account specified by the login form.
-     * If there are form errors (invalid email, missing fields, etc.), the
-     * errors are presented and no actual login attempt is made.
-     */
     private void attemptLogin() {
         if (mAuthTask != null) {
             return;
@@ -220,13 +219,11 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     }
 
     private boolean isEmailValid(String email) {
-        //TODO: Replace this with your own logic
         return email.contains("@");
     }
 
     private boolean isPasswordValid(String password) {
-        //TODO: Replace this with your own logic
-        return password.length() > 4;
+        return password.length() > 5;
     }
 
     /**
@@ -241,11 +238,13 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
 
             mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
+            cbRemember.setVisibility(show ? View.GONE : View.VISIBLE);
             mLoginFormView.animate().setDuration(shortAnimTime).alpha(
                     show ? 0 : 1).setListener(new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationEnd(Animator animation) {
                     mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
+                    cbRemember.setVisibility(show ? View.GONE : View.VISIBLE);
                 }
             });
 
@@ -262,52 +261,9 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             // and hide the relevant UI components.
             mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
             mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
+            cbRemember.setVisibility(show ? View.GONE : View.VISIBLE);
         }
     }
-
-    @Override
-    public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
-        return new CursorLoader(this,
-                // Retrieve data rows for the device user's 'profile' contact.
-                Uri.withAppendedPath(ContactsContract.Profile.CONTENT_URI,
-                        ContactsContract.Contacts.Data.CONTENT_DIRECTORY), ProfileQuery.PROJECTION,
-
-                // Select only email addresses.
-                ContactsContract.Contacts.Data.MIMETYPE +
-                        " = ?", new String[]{ContactsContract.CommonDataKinds.Email
-                .CONTENT_ITEM_TYPE},
-
-                // Show primary email addresses first. Note that there won't be
-                // a primary email address if the user hasn't specified one.
-                ContactsContract.Contacts.Data.IS_PRIMARY + " DESC");
-    }
-
-    @Override
-    public void onLoadFinished(Loader<Cursor> cursorLoader, Cursor cursor) {
-        List<String> emails = new ArrayList<>();
-        cursor.moveToFirst();
-        while (!cursor.isAfterLast()) {
-            emails.add(cursor.getString(ProfileQuery.ADDRESS));
-            cursor.moveToNext();
-        }
-
-        addEmailsToAutoComplete(emails);
-    }
-
-    @Override
-    public void onLoaderReset(Loader<Cursor> cursorLoader) {
-
-    }
-
-    private void addEmailsToAutoComplete(List<String> emailAddressCollection) {
-        //Create adapter to tell the AutoCompleteTextView what to show in its dropdown list.
-        ArrayAdapter<String> adapter =
-                new ArrayAdapter<>(LoginActivity.this,
-                        android.R.layout.simple_dropdown_item_1line, emailAddressCollection);
-
-        mEmailView.setAdapter(adapter);
-    }
-
 
     private interface ProfileQuery {
         String[] PROJECTION = {
@@ -332,6 +288,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             mEmail = email;
             mPassword = password;
         }
+
         @Override
         protected Integer doInBackground(Void... params) {
             try {
@@ -339,16 +296,15 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 ObjectMapper mapper = new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
                 Controller controllerToken = new Controller(new ApiConnection(Settings.BASE_URL));
                 RestResponse responseToken = controllerToken.postLogin(mEmail, mPassword);
-                if (responseToken.ResponseCode.equals(200)) {
-                    token = mapper.readValue(responseToken.Response, Token.class);
+                if (responseToken.getResponseCode().equals(200)) {
+                    token = mapper.readValue(responseToken.getResponse(), Token.class);
                     Controller controllerClient = new Controller(new ApiConnection(Settings.BASE_URL));
                     RestResponse clientResponse = controllerClient.getClient();
-                    client = mapper.readValue(clientResponse.Response, ClientModel.class);
-                    return clientResponse.ResponseCode;
+                    client = mapper.readValue(clientResponse.getResponse(), ClientModel.class);
+                    return clientResponse.getResponseCode();
                 }
-            }
-            catch (Exception e){
-            e.getMessage();
+            } catch (Exception e) {
+                e.getMessage();
             }
             return -1;
         }
@@ -359,19 +315,23 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             showProgress(false);
 
             if (success == 200) {
-                preferences.edit().putInt("prefClinic", client.ClinicId).apply();
-                preferences.edit().putString("userName", client.Email).apply();
-                Toast.makeText(LoginActivity.this, "Zalogowano jako: " + client.Name + " " + client.Surname, Toast.LENGTH_SHORT).show();
+                preferences.edit().putBoolean("RememberMe", cbRemember.isChecked()).commit();
+                preferences = LoginActivity.this.getSharedPreferences(token.getUserName(), Context.MODE_PRIVATE);
+                //getSharedPreferences(token.getUserName(), 0).edit().clear().commit();
+                preferences.edit().putInt("prefClinic", client.getClinicId()).apply();
+                preferences.edit().putString("userName", client.getEmail()).apply();
+                Toast.makeText(LoginActivity.this, "Zalogowano jako: " + client.getClientName() + " " + client.getClientSurname(), Toast.LENGTH_SHORT).show();
+                if (getUserAccount(LoginActivity.this) != null)
+                    //deleteUser(LoginActivity.this);
+                    if (cbRemember.isChecked()) {
+                        addAccount(LoginActivity.this, mEmail, mPassword, token.getAccess_token());
+                    }
                 Intent intent = new Intent(LoginActivity.this, ClinicActivity.class);
                 startActivity(intent);
                 finish();
             } else {
-                mPasswordView.setError(getString(R.string.error_incorrect_password));
+                mPasswordView.setError("Niepoprawne hasło");
                 mPasswordView.requestFocus();
-                Toast.makeText(LoginActivity.this, "Nie zalogowano, test", Toast.LENGTH_SHORT).show();
-                //Intent intent = new Intent(LoginActivity.this, ClinicActivity.class);
-                //startActivity(intent);
-                //finish();
             }
         }
 

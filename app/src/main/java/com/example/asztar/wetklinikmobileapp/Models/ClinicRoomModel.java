@@ -10,35 +10,30 @@ import android.arch.persistence.room.Relation;
 import android.arch.persistence.room.RoomWarnings;
 import android.support.annotation.Nullable;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 import java.sql.Array;
 import java.util.ArrayList;
 import java.util.List;
 
 import static android.arch.persistence.room.ForeignKey.CASCADE;
 
-public class ClinicModel {
-    @JsonProperty("ClinicId")
+@Entity(tableName = "clinic")
+public class ClinicRoomModel {
+    @PrimaryKey
     private Integer ClinicId;
-    @JsonProperty("Address")
+    @Embedded
     private AddressModel Address;
-    @JsonProperty("ClinicName")
-    private String ClinicName;
-    @JsonProperty("OpeningHours")
+    private String Name;
     private String OpeningHours;
-    @JsonProperty("ClinicPhoneNumber")
-    private ArrayList<PhoneNumberModel> ClinicPhoneNumber;
 
-    public ClinicModel() {
+    public ClinicRoomModel() {
     }
 
-    public ClinicModel(ClinicRoomModel model, ArrayList<PhoneNumberModel> numberModel) {
+    @Ignore
+    public ClinicRoomModel(ClinicModel model) {
         ClinicId = model.getClinicId();
         Address = model.getAddress();
-        ClinicName = model.getName();
+        Name = model.getClinicName();
         OpeningHours = model.getOpeningHours();
-        ClinicPhoneNumber = numberModel;
     }
 
     public Integer getClinicId() {
@@ -57,12 +52,12 @@ public class ClinicModel {
         Address = address;
     }
 
-    public String getClinicName() {
-        return ClinicName;
+    public String getName() {
+        return Name;
     }
 
-    public void setClinicName(String clinicName) {
-        ClinicName = clinicName;
+    public void setName(String name) {
+        Name = name;
     }
 
     public String getOpeningHours() {
@@ -71,13 +66,5 @@ public class ClinicModel {
 
     public void setOpeningHours(String openingHours) {
         OpeningHours = openingHours;
-    }
-
-    public ArrayList<PhoneNumberModel> getClinicPhoneNumber() {
-        return ClinicPhoneNumber;
-    }
-
-    public void setClinicPhoneNumber(ArrayList<PhoneNumberModel> clinicPhoneNumber) {
-        ClinicPhoneNumber = clinicPhoneNumber;
     }
 }

@@ -4,16 +4,23 @@ import android.arch.persistence.room.Dao;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 @Entity(tableName = "address")
-public class AddressModel
-{
+public class AddressModel {
     @PrimaryKey
-    public Integer AddressId;
-    public String Town;
-    public String Street;
-    public String BuildingNr;
-    public String PostalCode;
-    public String AddressType;
+    @JsonProperty("AddressId")
+    private Integer AddressId;
+    @JsonProperty("Town")
+    private String Town;
+    @JsonProperty("Street")
+    private String Street;
+    @JsonProperty("BuildingNr")
+    private String BuildingNr;
+    @JsonProperty("PostalCode")
+    private String PostalCode;
+    @JsonProperty("AddressType")
+    private String AddressType;
 
     public AddressModel() {
     }

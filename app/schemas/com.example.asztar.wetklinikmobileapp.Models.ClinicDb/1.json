@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "60bd440fc3a3f6a48b4223b1694f9843",
+    "identityHash": "77ae9b6f64cd96d8438971f28e603bd7",
     "entities": [
       {
         "tableName": "address",
@@ -447,12 +447,18 @@
         "foreignKeys": []
       },
       {
-        "tableName": "PhoneNumberModel",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`PhoneNumberId` INTEGER, `Number` TEXT, PRIMARY KEY(`PhoneNumberId`))",
+        "tableName": "phonenumber",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`PhoneNumberId` INTEGER, `ClinicId` INTEGER, `Number` TEXT, PRIMARY KEY(`PhoneNumberId`))",
         "fields": [
           {
             "fieldPath": "PhoneNumberId",
             "columnName": "PhoneNumberId",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "ClinicId",
+            "columnName": "ClinicId",
             "affinity": "INTEGER",
             "notNull": false
           },
@@ -501,7 +507,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"60bd440fc3a3f6a48b4223b1694f9843\")"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"77ae9b6f64cd96d8438971f28e603bd7\")"
     ]
   }
 }

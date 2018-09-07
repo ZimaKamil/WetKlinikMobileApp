@@ -4,20 +4,52 @@ import android.arch.persistence.room.Dao;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+import org.joda.time.DateTime;
+
 @Entity(tableName = "pet")
 
 public class PetModel {
     @PrimaryKey
-    public Integer PetId;
-    public String PetSpecies;
-    public String PetBreed;
-    public String Name;
-    public String ClientDesc;
-    public Double Height;
-    public Double Length;
-    public String ClientUserName;
+    @JsonProperty("PetId")
+    private Integer PetId;
+    @JsonProperty("PetSpecies")
+    private String PetSpecies;
+    @JsonProperty("PetBreed")
+    private String PetBreed;
+    @JsonProperty("PetName")
+    private String PetName;
+    @JsonProperty("ClientDesc")
+    private String ClientDesc;
+    @JsonProperty("Height")
+    private Double Height;
+    @JsonProperty("Length")
+    private Double Length;
+    @JsonProperty("Sex")
+    private Integer Sex;
+    @JsonProperty("BirthDate")
+    private DateTime BirthDate;
+    @JsonProperty("ClientUserName")
+    private String ClientUserName;
 
     public PetModel() {
+    }
+
+    public Integer getSex() {
+        return Sex;
+    }
+
+    public void setSex(Integer sex) {
+        Sex = sex;
+    }
+
+    public DateTime getBirthDate() {
+        return BirthDate;
+    }
+
+    public void setBirthDate(DateTime birthDate) {
+        BirthDate = birthDate;
     }
 
     public Integer getPetId() {
@@ -44,12 +76,12 @@ public class PetModel {
         PetBreed = petBreed;
     }
 
-    public String getName() {
-        return Name;
+    public String getPetName() {
+        return PetName;
     }
 
-    public void setName(String name) {
-        Name = name;
+    public void setPetName(String petName) {
+        PetName = petName;
     }
 
     public String getClientDesc() {

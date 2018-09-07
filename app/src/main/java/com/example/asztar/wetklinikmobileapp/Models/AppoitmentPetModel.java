@@ -8,8 +8,8 @@ import android.arch.persistence.room.PrimaryKey;
 
 public class AppoitmentPetModel {
     @PrimaryKey
-    public Integer PetId;
-    public String Name;
+    private Integer PetId;
+    private String Name;
 
     public AppoitmentPetModel() {
     }

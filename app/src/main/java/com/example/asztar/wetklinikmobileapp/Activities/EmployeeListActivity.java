@@ -29,7 +29,7 @@ import com.example.asztar.wetklinikmobileapp.Models.EmployeeDao;
 import com.example.asztar.wetklinikmobileapp.Models.EmployeeModel;
 import com.example.asztar.wetklinikmobileapp.R;
 
-import com.example.asztar.wetklinikmobileapp.Activities.dummy.DummyContent;
+import com.example.asztar.wetklinikmobileapp.Token;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -49,13 +49,15 @@ import java.util.List;
  * item details side-by-side using two vertical panes.
  */
 public class EmployeeListActivity extends MenuBase {
-    private boolean mTwoPane;
+
+    Token token = Token.getInstance();
     SharedPreferences preferences;
-    View recyclerView;
+    RecyclerView recyclerView;
     DateTime upDate;
     EmployeeTask employeeTask;
     EmployeeDao employeeDao;
     Integer prefClinic;
+    Boolean forceRedownload = false;
     FloatingActionButton fab;
     ArrayList<EmployeeModel> employeeModelArrayList;
 
@@ -63,36 +65,32 @@ public class EmployeeListActivity extends MenuBase {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_employee_list);
-        preferences = this.getSharedPreferences("user", Context.MODE_PRIVATE);
+        preferences = this.getSharedPreferences(token.getUserName(), Context.MODE_PRIVATE);
         fab = findViewById(R.id.fabRefreshEmployeeList);
         prefClinic = preferences.getInt("prefClinic", 0);
         long longDate = preferences.getLong("updateEmployeeListTime", 0);
         upDate = Converters.fromTimestamp(longDate);
-        employeeDao = ClinicDb.getDatabase(this).EmployeeDao();
-        if (Days.daysBetween(upDate, DateTime.now()).getDays()>3 && Connectivity.connectionIsUp(this)) {
-            employeeTask = new EmployeeTask();
-            employeeTask.execute();
-        }
-        else {
-            List<EmployeeModel> employee = employeeDao.findEmployeeByClinic(prefClinic);
-            employeeModelArrayList = new ArrayList<>(employee);
-        }
+        recyclerView = findViewById(R.id.employee_list);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(Connectivity.connectionIsUp(EmployeeListActivity.this)) {
+                if (Connectivity.connectionIsUp(EmployeeListActivity.this)) {
+                    forceRedownload = true;
                     employeeTask = new EmployeeTask();
                     employeeTask.execute();
+                } else {
+                    Toast.makeText(EmployeeListActivity.this, "Brak połączenia z internetem", Toast.LENGTH_SHORT).show();
                 }
-                Toast.makeText(EmployeeListActivity.this, "Brak połączenia z internetem", Toast.LENGTH_SHORT).show();
             }
         });
-        View recyclerView = findViewById(R.id.employee_list);
-        assert recyclerView != null;
+        if (token.getAccess_token() == null)
+            logout();
+        employeeTask = new EmployeeTask();
+        employeeTask.execute();
     }
 
     private void setupRecyclerView(@NonNull RecyclerView recyclerView) {
-        recyclerView.setAdapter(new SimpleItemRecyclerViewAdapter(this, employeeModelArrayList));
+        recyclerView.setAdapter(new SimpleItemRecyclerViewAdapter(employeeModelArrayList));
     }
 
     public class EmployeeTask extends AsyncTask<Void, Void, Integer> {
@@ -103,30 +101,42 @@ public class EmployeeListActivity extends MenuBase {
         @Override
         protected Integer doInBackground(Void... params) {
             int code = -1;
-            ObjectMapper mapper = new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-            Controller controller = new Controller(new ApiConnection(Settings.BASE_URL));
-            try {
-                RestResponse response = controller.getEmployees(prefClinic.toString());
-                EmployeeModel[] employeeModels = mapper.readValue(response.Response, EmployeeModel[].class);
-                employeeModelArrayList = new ArrayList<>(Arrays.asList(employeeModels));
-                return response.ResponseCode;
-            }
-            catch (Exception e){
-                e.getMessage();
+            employeeDao = ClinicDb.getDatabase(EmployeeListActivity.this).EmployeeDao();
+            if (Days.daysBetween(upDate, DateTime.now()).getDays() > 3 && Connectivity.connectionIsUp(EmployeeListActivity.this) || forceRedownload && Connectivity.connectionIsUp(EmployeeListActivity.this)) {
+                ObjectMapper mapper = new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+                Controller controller = new Controller(new ApiConnection(Settings.BASE_URL));
+                try {
+                    RestResponse response = controller.getEmployees(prefClinic.toString());
+                    EmployeeModel[] employeeModels = mapper.readValue(response.getResponse(), EmployeeModel[].class);
+                    employeeModelArrayList = new ArrayList<>(Arrays.asList(employeeModels));
+                    code = response.getResponseCode();
+                    if (code == 200) {
+                        employeeDao.insert(employeeModelArrayList.toArray(new EmployeeModel[employeeModelArrayList.size()]));
+                        preferences.edit().putLong("updateEmployeeListTime", Converters.dateToTimestamp(DateTime.now())).apply();
+                    }
+                    return code;
+                } catch (Exception e) {
+                    e.getMessage();
+                }
+            } else if (upDate != Converters.fromTimestamp(Long.valueOf(0))) {
+                List<EmployeeModel> employee = employeeDao.findEmployeeByClinic(prefClinic);
+                employeeModelArrayList = new ArrayList<>(employee);
+                code = 200;
             }
             return code;
         }
+
         @Override
         protected void onPostExecute(final Integer success) {
             //showProgress(false);
 
             if (success == 200) {
-                preferences.edit().putLong("updateEmployeeListTime", Converters.dateToTimestamp(DateTime.now())).apply();
-                employeeDao.insert(employeeModelArrayList.toArray(new EmployeeModel[employeeModelArrayList.size()]));
-                setupRecyclerView((RecyclerView) recyclerView);
-                Toast.makeText(EmployeeListActivity.this, success.toString(), Toast.LENGTH_SHORT).show();
+                setupRecyclerView(recyclerView);
+                if (forceRedownload)
+                    Toast.makeText(EmployeeListActivity.this, R.string.refreshed, Toast.LENGTH_SHORT).show();
+                forceRedownload = false;
             } else {
-                Toast.makeText(EmployeeListActivity.this, success.toString(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(EmployeeListActivity.this, R.string.ToastCantConnect, Toast.LENGTH_SHORT).show();
             }
         }
 
@@ -139,36 +149,46 @@ public class EmployeeListActivity extends MenuBase {
     public static class SimpleItemRecyclerViewAdapter
             extends RecyclerView.Adapter<SimpleItemRecyclerViewAdapter.ViewHolder> {
 
-        private final EmployeeListActivity mParentActivity;
-        private final ArrayList<EmployeeModel> mValues;
+        private ArrayList<EmployeeModel> mValues;
         private final View.OnClickListener mOnClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 EmployeeModel employeeModel = (EmployeeModel) view.getTag();
                 Context context = view.getContext();
                 Intent intent = new Intent(context, EmployeeDetailActivity.class);
-                intent.putExtra(EmployeeDetailFragment.ARG_ITEM_ID, employeeModel.EmployeeId.toString());
+                intent.putExtra(EmployeeDetailFragment.ARG_ITEM_ID, employeeModel.getEmployeeId().toString());
                 context.startActivity(intent);
             }
         };
 
-        SimpleItemRecyclerViewAdapter(EmployeeListActivity parent, ArrayList<EmployeeModel> items) {
+        public static class ViewHolder extends RecyclerView.ViewHolder {
+            private TextView tvEmployeePosition, tvEmployeeName, tvEmployeeSurname;
+
+            private ViewHolder(View view) {
+                super(view);
+                tvEmployeePosition = view.findViewById(R.id.tvEmployeePosition);
+                tvEmployeeName = view.findViewById(R.id.tvEmployeeName);
+                tvEmployeeSurname = view.findViewById(R.id.tvEmployeeSurname);
+
+            }
+        }
+
+        public SimpleItemRecyclerViewAdapter(ArrayList<EmployeeModel> items) {
             mValues = items;
-            mParentActivity = parent;
         }
 
         @Override
-        public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        public SimpleItemRecyclerViewAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             View view = LayoutInflater.from(parent.getContext())
                     .inflate(R.layout.employee_list_content, parent, false);
             return new ViewHolder(view);
         }
 
         @Override
-        public void onBindViewHolder(final ViewHolder holder, int position) {
-            holder.tvEmployeePosition.setText(mValues.get(position).EmployeeId);
-            holder.tvEmployeeName.setText(mValues.get(position).Name);
-            holder.tvEmployeeName.setText(mValues.get(position).Surname);
+        public void onBindViewHolder(ViewHolder holder, int position) {
+            holder.tvEmployeePosition.setText(mValues.get(position).getPosition());
+            holder.tvEmployeeName.setText(mValues.get(position).getEmployeeName());
+            holder.tvEmployeeSurname.setText(mValues.get(position).getSurname());
             holder.itemView.setTag(mValues.get(position));
             holder.itemView.setOnClickListener(mOnClickListener);
         }
@@ -176,20 +196,6 @@ public class EmployeeListActivity extends MenuBase {
         @Override
         public int getItemCount() {
             return mValues.size();
-        }
-
-        class ViewHolder extends RecyclerView.ViewHolder {
-            final TextView tvEmployeePosition;
-            final TextView tvEmployeeName;
-            final TextView tvEmployeeSurname;
-
-            ViewHolder(View view) {
-                super(view);
-                tvEmployeePosition = view.findViewById(R.id.tvEmployeePosition);
-                tvEmployeeName = view.findViewById(R.id.tvEmployeeName);
-                tvEmployeeSurname = view.findViewById(R.id.tvEmployeeSurname);
-
-            }
         }
     }
 }

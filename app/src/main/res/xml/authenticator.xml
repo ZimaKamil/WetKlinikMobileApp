@@ -1,0 +1,6 @@
+<account-authenticator xmlns:android="http://schemas.android.com/apk/res/android"
+    android:accountType="klinik.wet"
+    android:icon="@drawable/common_full_open_on_phone"
+    android:label="@string/app_name"
+    android:smallIcon="@drawable/common_full_open_on_phone" >
+</account-authenticator>
