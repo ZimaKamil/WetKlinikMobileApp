@@ -108,7 +108,7 @@ public class PetDetailFragment extends Fragment {
             if (mItem.getHeight() != 0)
                 tvPetHeight.setText(mItem.getHeight().toString());
             else{tvPetHeight.setText("-");}
-            if(mItem.getSex()==0)
+            if(mItem.getSex()==1)
                 tvPetSex.setText("Samiec");
             else{tvPetSex.setText("Samica");}
             tvPetBirthdate.setText(sb.toString());

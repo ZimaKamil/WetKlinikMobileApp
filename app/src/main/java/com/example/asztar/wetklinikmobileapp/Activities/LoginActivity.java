@@ -99,11 +99,6 @@ public class LoginActivity extends AppCompatActivity {
         //getSharedPreferences("user", 0).edit().clear().commit();
         preferences = this.getSharedPreferences("user", Context.MODE_PRIVATE);
         cbRemember.setChecked(preferences.getBoolean("RememberMe", false));
-        if (getUserAccount(this) != null & cbRemember.isChecked()) {
-            mEmailView.setText(getUserAccount(this).name);
-            mPasswordView.setText(getUserPassword(this, getUserAccount(this)));
-        }
-
         mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
@@ -122,7 +117,10 @@ public class LoginActivity extends AppCompatActivity {
                 attemptLogin();
             }
         });
-
+        if (getUserAccount(this) != null & cbRemember.isChecked()) {
+            mEmailView.setText(getUserAccount(this).name);
+            mPasswordView.setText(getUserPassword(this, getUserAccount(this)));
+        }
         if (!Connectivity.connectionIsUp(this)) {
             // There are no active networks.
             tvNoConnection.setVisibility(View.VISIBLE);
@@ -321,7 +319,7 @@ public class LoginActivity extends AppCompatActivity {
                 preferences.edit().putInt("prefClinic", client.getClinicId()).apply();
                 preferences.edit().putString("userName", client.getEmail()).apply();
                 Toast.makeText(LoginActivity.this, "Zalogowano jako: " + client.getClientName() + " " + client.getClientSurname(), Toast.LENGTH_SHORT).show();
-                if (getUserAccount(LoginActivity.this) != null)
+                //if (getUserAccount(LoginActivity.this) != null)
                     //deleteUser(LoginActivity.this);
                     if (cbRemember.isChecked()) {
                         addAccount(LoginActivity.this, mEmail, mPassword, token.getAccess_token());

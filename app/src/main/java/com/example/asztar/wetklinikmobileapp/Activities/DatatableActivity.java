@@ -108,15 +108,16 @@ public class DatatableActivity extends MenuBase {
                     day.setText(sb.toString());
                     TextView hour = new TextView(DatatableActivity.this);
                     if (appointment.getDate().getMinuteOfHour()<10)
-                        hour.setText(String.valueOf(appointment.getDate().getHourOfDay()) + ":" + String.valueOf(appointment.getDate().getMinuteOfHour()));
-                    else{hour.setText(String.valueOf(appointment.getDate().getHourOfDay()) + ":0" + String.valueOf(appointment.getDate().getMinuteOfHour())); }
+                        hour.setText(String.valueOf(appointment.getDate().getHourOfDay()) + ":0" + String.valueOf(appointment.getDate().getMinuteOfHour()));
+                    else{hour.setText(String.valueOf(appointment.getDate().getHourOfDay()) + ":" + String.valueOf(appointment.getDate().getMinuteOfHour())); }
                     AlertDialog.Builder alertDialog = new AlertDialog.Builder(DatatableActivity.this);
                     alertDialog.setTitle("Umówiona wizyta");
                     LinearLayout linearLayout = new LinearLayout(DatatableActivity.this);
                     linearLayout.setOrientation(LinearLayout.VERTICAL);
                     LinearLayout.LayoutParams llp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-                    llp.setMargins(50, 50, 20, 20);
-                    linearLayout.setLayoutParams(llp);
+                    llp.setMargins(20, 20, 0, 0);
+                    day.setLayoutParams(llp);
+                    hour.setLayoutParams(llp);
                     linearLayout.addView(day);
                     linearLayout.addView(hour);
                     alertDialog.setView(linearLayout);

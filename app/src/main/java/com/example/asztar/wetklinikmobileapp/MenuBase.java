@@ -8,6 +8,7 @@ import android.view.MenuItem;
 
 import com.example.asztar.wetklinikmobileapp.Activities.ClinicActivity;
 import com.example.asztar.wetklinikmobileapp.Activities.DatatableActivity;
+import com.example.asztar.wetklinikmobileapp.Activities.LoginActivity;
 import com.example.asztar.wetklinikmobileapp.Activities.PetListActivity;
 import com.example.asztar.wetklinikmobileapp.Activities.SettingsActivity;
 
@@ -63,9 +64,7 @@ public abstract class MenuBase extends AppCompatActivity {
 
     public void logout(){
         Token.reset();
-        Intent intentLogout = getBaseContext().getPackageManager()
-                .getLaunchIntentForPackage(getBaseContext().getPackageName());
-        intentLogout.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        Intent intentLogout = new Intent(this, LoginActivity.class);
         startActivity(intentLogout);
     }
 }
